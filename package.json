@@ -1,0 +1,27 @@
+{
+  "name": "akbot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "bot.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node bot.js",
+    "devStart": "nodemon bot.js"
+  },
+  "author": "Akam Bilbas",
+  "license": "ISC",
+  "dependencies": {
+    "badwords": "^1.0.0",
+    "better-sqlite3": "^7.1.2",
+    "discord-anti-spam": "^2.4.1",
+    "discord.js": "^12.5.1",
+    "dotenv": "^8.2.0",
+    "humanize-duration": "^3.25.1",
+    "node-fetch": "^2.6.1",
+    "node-gyp": "^7.1.2",
+    "quick.db": "^7.1.3"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.6"
+  }
+}
