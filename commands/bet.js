@@ -56,7 +56,7 @@ module.exports = function (msg, args) {
             .setColor('#D9D023')
             .setTitle('Current possible bets')
             .setAuthor('AkBot', 'https://i.imgur.com/y21mVd6.png')
-            .setDescription('The current teams you can bet on: ```' + teamMsg + "``` \nPlace bets by using the command: ```!bet teamName amount```\nNumbers in () are the multipliers of your points on a correct bet, this is based on odds and current standings of teams.")
+            .setDescription('The current teams you can bet on: ```' + teamMsg + "``` \nPlace bets by using the command: ```!bet teamName amount```\nNumbers in () are the multipliers of your AkPoints on a correct bet, this is based on odds and current standings of teams.")
             .setThumbnail('https://i.imgur.com/mXodbnH.png')
             .addFields(
                 { name: 'Current matches', value: '```' + matchesMsg + ' ```' },
@@ -92,10 +92,10 @@ module.exports = function (msg, args) {
         msg.channel.send("Team does not exist or is not a Zephyr team.");
         return;
     } else if (!Number.isSafeInteger(bet)) {
-        msg.channel.send("Please bet an integer amount of points.");
+        msg.channel.send("Please bet an integer amount of AkPoints.");
         return;
     } else if (bet > score.points) {
-        msg.channel.send("Your bet is higher than your total points you currently have.");
+        msg.channel.send("Your bet is higher than your total AkPoints you currently have.");
         return;
     }
 
@@ -112,7 +112,7 @@ module.exports = function (msg, args) {
             score.amount = amountBets.join(',') + ",";
             score.points = score.points - bet;
             client.setScore.run(score);
-            msg.channel.send("You have bet " + bet + " points for " + teamName + ". Your current total points is " + score.points + ".");
+            msg.channel.send("You have bet " + bet + " AkPoints for " + teamName + ". Your current total AkPoints is " + score.points + ".");
             return;
         }
     }
@@ -122,5 +122,5 @@ module.exports = function (msg, args) {
     score.amount = score.amount + args[0] + ",";
     score.points = score.points - bet;
     client.setScore.run(score);
-    msg.channel.send("You have bet " + bet + " points for " + teamName + ". Your current total points is " + score.points + ".");
+    msg.channel.send("You have bet " + bet + " AkPoints for " + teamName + ". Your current total AkPoints is " + score.points + ".");
 }
