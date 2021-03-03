@@ -1,6 +1,8 @@
 const read = require("./methods/read.js");
 const locked = require("./methods/locked.js");
 const Discord = require('discord.js');
+const generateScore = require("./methods/generateScore");
+const validAmount = require("./methods/validAmount.js");
 require('dotenv').config();
 
 module.exports = function (msg, args) {
@@ -15,13 +17,7 @@ module.exports = function (msg, args) {
     let score = client.getScore.get(msg.author.id);
     //creates mew table if user does not have one yet
     if (!score) {
-        score = {
-            id: `${msg.author.id}`,
-            user: msg.author.id,
-            points: 0,
-            bids: "",
-            amount: ""
-        }
+        score = generateScore(msg)
     }
 
     if (args.length == 0) {
@@ -56,7 +52,7 @@ module.exports = function (msg, args) {
             .setColor('#D9D023')
             .setTitle('Current possible bets')
             .setAuthor('AkBot', 'https://i.imgur.com/y21mVd6.png')
-            .setDescription('The current teams you can bet on: ```' + teamMsg + "``` \nPlace bets by using the command: ```!bet teamName amount```\nNumbers in () are the multipliers of your points on a correct bet, this is based on odds and current standings of teams.")
+            .setDescription('The current teams you can bet on: ```' + teamMsg + "``` \nPlace bets by using the command: ```!bet teamName amount```\nNumbers in () are the multipliers of your AkPoints on a correct bet, this is based on odds and current standings of teams.")
             .setThumbnail('https://i.imgur.com/mXodbnH.png')
             .addFields(
                 { name: 'Current matches', value: '```' + matchesMsg + ' ```' },
@@ -83,19 +79,13 @@ module.exports = function (msg, args) {
     let teamName = args.shift().toLowerCase();
     let bet = parseInt(args[0], 10);
 
-    if (bet <= 0) {
-        msg.channel.send("Please bet atleast 1 point.");
+    if (!validAmount(score, bet, msg)) {
         return;
     }
+
     //check input for !bid teamName bet
     if(!teams.includes(teamName)) {
-        msg.channel.send("Team does not exist or is not a Zephyr team.");
-        return;
-    } else if (!Number.isSafeInteger(bet)) {
-        msg.channel.send("Please bet an integer amount of points.");
-        return;
-    } else if (bet > score.points) {
-        msg.channel.send("Your bet is higher than your total points you currently have.");
+        msg.channel.send("Team does not exist or is not a Zephyr team. Please make sure you did not mispell the team name or it is in the list with ``!bet``");
         return;
     }
 
@@ -112,7 +102,7 @@ module.exports = function (msg, args) {
             score.amount = amountBets.join(',') + ",";
             score.points = score.points - bet;
             client.setScore.run(score);
-            msg.channel.send("You have bet " + bet + " points for " + teamName + ". Your current total points is " + score.points + ".");
+            msg.channel.send("You have bet " + bet + " AkPoints for " + teamName + ". Your current total AkPoints is " + score.points + ".");
             return;
         }
     }
@@ -122,5 +112,5 @@ module.exports = function (msg, args) {
     score.amount = score.amount + args[0] + ",";
     score.points = score.points - bet;
     client.setScore.run(score);
-    msg.channel.send("You have bet " + bet + " points for " + teamName + ". Your current total points is " + score.points + ".");
+    msg.channel.send("You have bet " + bet + " AkPoints for " + teamName + ". Your current total AkPoints is " + score.points + ".");
 }
