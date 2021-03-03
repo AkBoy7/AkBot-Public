@@ -1,6 +1,7 @@
 const cooldown = 172800000; //2 days
 const db = require('quick.db');
 const humanizeDuration = require('humanize-duration');
+const generateScore = require('./methods/generateScore');
 
 const freePoints = 300;
 
@@ -12,14 +13,7 @@ module.exports = async function (msg, args) {
     let score = client.getScore.get(msg.author.id);
     //creates mew table if user does not have one yet
     if (!score) {
-        score = {
-            id: `${msg.author.id}`,
-            user: msg.author.id,
-            points: 0,
-            bids: "",
-            amount: "",
-            cooldown: 0
-        }
+        score = generateScore(msg);
     }
 
     if (msg.channel.id != process.env.AKBOT_CHANNEL_ID && msg.channel.id != process.env.TEST_CHANNELID) {
