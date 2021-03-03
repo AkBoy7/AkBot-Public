@@ -24,12 +24,12 @@ module.exports = function (msg, args) {
             setTimeout(() => {
                 console.log("flipping coin, heads");
                 msg.channel.send("It's HEADS!");
-            }, 1000);
+            }, 1500);
         } else {
             setTimeout(() => {
                 console.log("flipping coin, tail");
                 msg.channel.send("It's TAILS!");
-            }, 1000);
+            }, 1500);
         }
     // User predicts heads or tails and made a bet (and if the user filled in more, ignore it)
     } else if (args.length >= 2) {
@@ -47,7 +47,7 @@ module.exports = function (msg, args) {
         }
 
         // Check whether the user has made a valid prediction
-        msg.channel.send("Flipping coin, you predicted " + predicted + "with " + bet + " at risk...");
+        msg.channel.send("Flipping coin, you predicted `" + predicted + "` with `" + bet + "` AkPoints at risk...");
 
         let result;
         // Actually the result of the flip
@@ -63,15 +63,15 @@ module.exports = function (msg, args) {
         // Remove/Add to balance
         setTimeout(()=> {
             if (predicted === result) {
-                msg.channel.send("Wow it's actually " + result + ", " + bet + "has been added to your balance!");
+                msg.channel.send("Wow it's actually `" + result + "`, `" + bet + "` AkPoints have been added to your balance!");
                 score.points = score.points + bet;
             } else {
-                msg.channel.send("Welp, you predicted incorrectly, it was " + result + ", " + bet + "has been removed from your balance!");
+                msg.channel.send("Welp, you predicted incorrectly, it was `" + result + "`, `" + bet + "` AkPoints have been removed from your balance!");
                 score.points = score.points - bet;
             }
-            msg.channel.send("Your new total is " + score.points); 
+            msg.channel.send("Your new total is `" + score.points + "`"); 
             client.setScore.run(score)
-        }, 1000)
+        }, 1500)
     } else {
         msg.channel.send("To use coinflip either use ```!coinflip``` or ```!coinflip heads/tails amount```")
     }

@@ -10,6 +10,8 @@ module.exports = function (score, bet, msg) {
         return false
     } else if (bet > score.points) {
         msg.channel.send("Your bet is higher than your current total points.");
+        return false
+    } else {
         return true
     }
 };

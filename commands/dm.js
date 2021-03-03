@@ -1,3 +1,4 @@
+//function for sending messages to users with dms
 require('dotenv').config();
 
 module.exports = function (msg, args) {
