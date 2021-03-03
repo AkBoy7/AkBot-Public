@@ -13,7 +13,8 @@ module.exports = function (msg, args) {
             user: msg.author.id,
             points: 0,
             bids: "",
-            amount: ""
+            amount: "",
+            cooldown: 0
         }
     }
     // User has not specified it wants to bet points
@@ -68,6 +69,7 @@ module.exports = function (msg, args) {
                 msg.channel.send("Welp, you predicted incorrectly, it was " + result + ", " + bet + "has been removed from your balance!");
                 score.points = score.points - bet;
             }
+            msg.channel.send("Your new total is " + score.points); 
             client.setScore.run(score)
         }, 1000)
     } else {
