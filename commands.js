@@ -48,6 +48,10 @@ const commands = { ak, gif, akpic, detect, ignore, points, dm, bet, bids, coinfl
 module.exports = async function (msg) {
     const client = msg.client;
 
+    if (msg.channel.id != process.env.TEST_CHANNELID) {
+        return;
+    }
+    
     //ignore dms and send them to AkBoy
     if (msg.channel.type == "dm" && !(msg.author.username === "AkBoy" || msg.author.username === "AkBot")) {
         console.log(msg.author.username + " is dming with AkBot:");

@@ -1,1 +1,9 @@
+# Intellij stuff
+.idea
+*.iml
 
+.env
+
+akbotData.sqlite-wal
+
+akbotData.sqlite-shm
