@@ -23,12 +23,12 @@ module.exports = async function (msg, args) {
 
     // Increment the score by a set amount, has a cooldown for each user
     if (args.length == 0) {
-        msg.reply(`You currently have ${score.points} points! `+ "For more information use: ```!points help```");
+        msg.reply(`You currently have ${score.points} AkPoints! `+ "For more information use: ```!points help```");
         return;
     } else if (args[0] === "help") {
-        msg.channel.send("Points do not have any value or meaning other then to flex on your friends on the leaderboard.\nYou get points by typing `!points get` and also by joining our acitivities.\nYou can also get more points by betting them on your favorite teams, use `!bet` command for more information.");
+        msg.channel.send("AkPoints do not have any value or meaning other then to flex on your friends on the leaderboard.\nYou get AkPoints by typing `!points get` and also by joining our acitivities.\nYou can also get more AkPoints by betting them on your favorite teams, use `!bet` command for more information.");
     } else if (args[0] === "get") {
-        console.log("points requested by " + msg.author.username);
+        console.log("AkPoints requested by " + msg.author.username);
 
         if (score.cooldown !== 0 && cooldown - (Date.now() - score.cooldown) > 0) {
             // If user still has a cooldown
@@ -39,7 +39,7 @@ module.exports = async function (msg, args) {
             score.cooldown = Date.now();
             client.setScore.run(score);
             const remaining = humanizeDuration(cooldown - (Date.now() - score.cooldown), { delimiter: " and ", round: true, units: ["d", "h", "m"]});
-            msg.reply("You have gained " + freePoints + ` points and currently you have ${score.points} points! You can use this command again after ${remaining}`);
+            msg.reply("You have gained " + freePoints + ` AkPoints and currently you have ${score.points} AkPoints! You can use this command again after ${remaining}`);
         }
     } else if (checkRole("Board", msg) || checkRole("Moderator", msg)) {
         //Moderator specific messages
@@ -63,15 +63,15 @@ module.exports = async function (msg, args) {
                 if (args[0] === "add") {
                     userScore.points += pointReq;
                     client.setScore.run(userScore);
-                    msg.channel.send("Added " + pointReq + " points to <@" + nameID + `> bringing his total to ${userScore.points}.`);
+                    msg.channel.send("Added " + pointReq + " AkPoints to <@" + nameID + `> bringing his total to ${userScore.points}.`);
                 } else if (args[0] === "remove") {
                     userScore.points -= pointReq;
                     client.setScore.run(userScore);
-                    msg.channel.send("Removed " + pointReq + " points from <@" + nameID + `> bringing his total to ${userScore.points}.`);
+                    msg.channel.send("Removed " + pointReq + " AkPoints from <@" + nameID + `> bringing his total to ${userScore.points}.`);
                 } else if (args[0] === "set") {
                     userScore.points = pointReq;
                     client.setScore.run(userScore);
-                    msg.channel.send("Total points setted to " + pointReq + " for <@" + nameID + ">.");
+                    msg.channel.send("Total AkPoints setted to " + pointReq + " for <@" + nameID + ">.");
                 }
             }
         } else {

@@ -85,7 +85,7 @@ module.exports = function (msg, args) {
                                 amountBets.splice(index, 1);  
                             }
     
-                            msg.channel.send("<@" + user.id + "> has bet correctly and won " + pointsGained + " points.");
+                            msg.channel.send("<@" + user.id + "> has bet correctly and won " + pointsGained + " AkPoints.");
                             break;
                         }
                     }
@@ -104,7 +104,7 @@ module.exports = function (msg, args) {
                                 amountBets.splice(index, 1);  
                             }
     
-                            msg.channel.send("<@" + user.id + "> has lost the bet and lost " + pointsLost + " points.");
+                            msg.channel.send("<@" + user.id + "> has lost the bet and lost " + pointsLost + " AkPoints.");
                             break;
                         }
                     }
@@ -132,7 +132,7 @@ module.exports = function (msg, args) {
                             user.points += pointsBet;
                             client.setScore.run(user);
         
-                            msg.channel.send("Bet canceled bet points refunded to <@" + user.id + "> " + pointsBet + " points.");
+                            msg.channel.send("Bet canceled bet AkPoints refunded to <@" + user.id + "> " + pointsBet + " AkPoints.");
                             break;
                         }
                     }
