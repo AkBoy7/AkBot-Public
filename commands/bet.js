@@ -1,6 +1,7 @@
 const read = require("./methods/read.js");
 const locked = require("./methods/locked.js");
 const Discord = require('discord.js');
+const generateScore = require("./methods/generateScore");
 const validAmount = require("./methods/validAmount.js");
 require('dotenv').config();
 
@@ -16,13 +17,7 @@ module.exports = function (msg, args) {
     let score = client.getScore.get(msg.author.id);
     //creates mew table if user does not have one yet
     if (!score) {
-        score = {
-            id: `${msg.author.id}`,
-            user: msg.author.id,
-            points: 0,
-            bids: "",
-            amount: ""
-        }
+        score = generateScore(msg)
     }
 
     if (args.length == 0) {
