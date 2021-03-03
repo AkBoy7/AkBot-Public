@@ -1,18 +1,12 @@
 const deckSetup = require("./classes/deck.js");
+const generateScore = require("./methods/generateScore");
 
 module.exports = async function (msg, args) {
     const client = msg.client;
     let score = client.getScore.get(msg.author.id);
-    //creates mew table if user does not have one yet
+    //creates new table if user does not have one yet
     if (!score) {
-        score = {
-            id: `${msg.author.id}`,
-            user: msg.author.id,
-            points: 0,
-            bids: "",
-            amount: "",
-            cooldown: 0
-        }
+        score = generateScore(msg);
     }
 
     // For now only test channel
@@ -24,7 +18,7 @@ module.exports = async function (msg, args) {
     let deck = new deckSetup();
     let filter = m => m.author.id === msg.author.id;
     // Sent a message with a single card
-    // If the user responds with "test" then the message get's edited and a new card is drawn
+    // If the user responds with "test" then the message gets edited and a new card is drawn
     msg.channel.send(deck.drawSingle()).then((sentMessage) => {
         msg.channel.awaitMessages(filter, {
             max: 1,
