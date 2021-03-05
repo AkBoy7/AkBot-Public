@@ -25,11 +25,12 @@ module.exports = async function (msg, args) {
             time: 10000,
             errors: ['time']
         }).then(messages => {
-            for (let message in messages) {
-                if (message.content === "test") {
-                    sentMessage.edit("This message has been edited");
-                    break;
-                }
+            if (messages[0].content === "test") {
+                sentMessage.edit("This message has been edited");
+                msg.channel.send("The previous message should have been edited");
+                break;
+            } else {
+                msg.channel.send("Not the correct keyword");   
             }
         }).catch(messages => {
                 msg.channel.send("You have not responded in time :(")
