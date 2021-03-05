@@ -43,7 +43,8 @@ const bet = require("./commands/bet.js");
 const bids = require("./commands/bids.js");
 const coinflip = require("./commands/coinflip.js");
 const app = require("./commands/app.js");
-const commands = { ak, gif, akpic, detect, ignore, points, dm, bet, bids, coinflip, app };
+const test = require("./commands/test.js");
+const commands = { ak, gif, akpic, detect, ignore, points, dm, bet, bids, coinflip, app, test };
 
 module.exports = async function (msg) {
     const client = msg.client;
