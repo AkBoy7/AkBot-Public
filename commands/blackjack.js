@@ -27,7 +27,7 @@ module.exports = async function (msg, args) {
         }).then(messages => {
             for (let message in messages) {
                 if (message.content === "test") {
-                    sentMessage.edit(deck.drawSingle());
+                    sentMessage.edit("This message has been edited");
                     break;
                 }
             }
