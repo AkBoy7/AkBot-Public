@@ -16,6 +16,7 @@ module.exports = async function (msg, args) {
     }
 
     let deck = new deckSetup();
+    msg.channel.send(deck.deck[0]);
     msg.channel.send(deck.deck.length);
     msg.channel.send(deck.drawSingle());
     msg.channel.send(deck.deck.length);
