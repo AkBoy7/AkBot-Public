@@ -66,9 +66,10 @@ module.exports = function (msg, args) {
 
         // Remove/Add to balance
         setTimeout(()=> {
+            let score = client.getScore.get(msg.author.id);
             if (predicted === result) {
                 msg.channel.send("Wow it's actually `" + result + "`, `" + bet + "` AkPoints have been added to your balance!");
-                // Dubble the points because the original bet has already been deducted
+                // Double the points because the original bet has already been deducted
                 score.points = score.points + bet*2;
                 client.setScore.run(score);
             } else {
