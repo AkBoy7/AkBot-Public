@@ -3,6 +3,7 @@ const locked = require("./methods/locked.js");
 const Discord = require('discord.js');
 const generateScore = require("./methods/generateScore");
 const validAmount = require("./methods/validAmount.js");
+const parsePoints = require("./methods/parsePoints");
 require('dotenv').config();
 
 module.exports = function (msg, args) {
@@ -77,7 +78,7 @@ module.exports = function (msg, args) {
     }
 
     let teamName = args.shift().toLowerCase();
-    let bet = parseInt(args[0], 10);
+    let bet = parsePoints(args[0], score);
 
     if (!validAmount(score, bet, msg)) {
         return;
@@ -85,7 +86,7 @@ module.exports = function (msg, args) {
 
     //check input for !bid teamName bet
     if(!teams.includes(teamName)) {
-        msg.channel.send("Team does not exist or is not a Zephyr team. Please make sure you did not mispell the team name or it is in the list with ``!bet``");
+        msg.channel.send("Team does not exist or is not a Zephyr team. Please make sure you did not misspell the team name or it is in the list with ``!bet``");
         return;
     }
 
