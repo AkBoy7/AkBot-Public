@@ -1,16 +1,15 @@
-module.exports = function(msg, args) {
+module.exports = async function(msg, args) {
     const client = msg.client;
     const filter = m => m.author.id === msg.author.id;
     msg.channel.awaitMessages(filter, {
         max: 1,
-        time: 10000
+        time: 10000,
+        errors: ['time']
     }).then( m => {
         msg.channel.send("new author id: " + m.author.id);
         msg.channel.send("old author id: " + msg.author.id);
         msg.channel.send("Just received the following message: " + m.first().content);
     }).catch( m => {
-        msg.channel.send("new author id: " + m.author.id);
-        msg.channel.send("old author id: " + msg.author.id);
         msg.channel.send("User did not type a message in 10 seconds");
     });
 
