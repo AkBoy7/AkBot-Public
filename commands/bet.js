@@ -78,7 +78,7 @@ module.exports = function (msg, args) {
     }
 
     let teamName = args.shift().toLowerCase();
-    let bet = parsePoints(args[1], score);
+    let bet = parsePoints(args[0], score);
 
     if (!validAmount(score, bet, msg)) {
         return;
