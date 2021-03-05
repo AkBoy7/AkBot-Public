@@ -43,6 +43,10 @@ module.exports = function (msg, args) {
             return;
         }
 
+        // Already subtract the points and update the client score
+        score.points = score.points - bet;
+        client.setScore.run(score);
+
         // Check whether the user has made a valid prediction
         msg.channel.send("Flipping coin, you predicted `" + predicted + "` with `" + bet + "` AkPoints at risk...");
 
@@ -59,15 +63,16 @@ module.exports = function (msg, args) {
 
         // Remove/Add to balance
         setTimeout(()=> {
+            let score = client.getScore.get(msg.author.id);
             if (predicted === result) {
                 msg.channel.send("Wow it's actually `" + result + "`, `" + bet + "` AkPoints have been added to your balance!");
-                score.points = score.points + bet;
+                // Double the points because the original bet has already been deducted
+                score.points = score.points + bet*2;
+                client.setScore.run(score);
             } else {
                 msg.channel.send("Welp, you predicted incorrectly, it was `" + result + "`, `" + bet + "` AkPoints have been removed from your balance!");
-                score.points = score.points - bet;
             }
-            msg.channel.send("Your new total is `" + score.points + "`"); 
-            client.setScore.run(score)
+            msg.channel.send("Your new total is `" + score.points + "`");
         }, 1500)
     } else {
         msg.channel.send("To use coinflip either use ```!coinflip``` or ```!coinflip heads/tails amount```")
