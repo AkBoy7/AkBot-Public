@@ -31,7 +31,7 @@ module.exports = async function (msg, args) {
             time: 10000,
             errors: ['time']
         }).then(messages => {
-            msg.channel.send(messages[0]);
+            msg.channel.send(messages[0].content);
             if (messages[0].content === "test") {
                 msg.channel.send("The previous message should have been edited");
                 sentMessage.edit("This message has been edited");
