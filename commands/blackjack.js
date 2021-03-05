@@ -20,7 +20,9 @@ module.exports = async function (msg, args) {
     msg.channel.send(deck.deck.length);
     msg.channel.send(deck.drawSingle());
     msg.channel.send(deck.deck.length);
-    let filter = m => m.author.id === msg.author.id;
+    let filter = m => {
+        return (m.client === client);
+    };
     // Sent a message with a single card
     // If the user responds with "test" then the message gets edited and a new card is drawn
     msg.channel.send(deck.drawSingle()).then((sentMessage) => {
@@ -29,6 +31,7 @@ module.exports = async function (msg, args) {
             time: 10000,
             errors: ['time']
         }).then(messages => {
+            msg.channel.send(messages[0]);
             if (messages[0].content === "test") {
                 msg.channel.send("The previous message should have been edited");
                 sentMessage.edit("This message has been edited");
@@ -36,8 +39,8 @@ module.exports = async function (msg, args) {
                 msg.channel.send("Not the correct keyword");
             }
         }).catch(messages => {
-            msg.channel.send("You have not responded in time :(")
-        })
+            msg.channel.send("You have not responded in time :(");
+        });
     });
 
 
