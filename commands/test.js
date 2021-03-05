@@ -5,9 +5,9 @@ module.exports = function(msg, args) {
         max: 1,
         time: 10000,
         errors: ['time']
-    }).then(m => {
-        msg.channel.send("Just received the following message: ", m[0].content);
-    }) .catch( m => {
+    }).then( m => {
+        msg.channel.send("Just received the following message: " + m[0].content);
+    }).catch( m => {
         msg.channel.send("User did not type a message in 10 seconds");
     });
 
