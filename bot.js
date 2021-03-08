@@ -1,6 +1,7 @@
 console.log("Starting bot up! This bot was made by Akam");
 
 require('dotenv').config();
+const reminder = require('./commands/remind.js');
 
 const Discord = require('discord.js');
 const client = new Discord.Client({
@@ -16,9 +17,9 @@ client.on('ready', readyDiscord);
 function readyDiscord() {
     client.user.setActivity("Zephyr", {type: 'PLAYING'});
     setupSQL();
+    reminder(client);
     console.log('---login succesfull, bot is online---');
 }
-
 const commandHandler = require("./commands")
 
 client.on('message', commandHandler);
