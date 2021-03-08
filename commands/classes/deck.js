@@ -1,11 +1,12 @@
+const Card = require("card");
 module.exports = class Deck {
     constructor() {
         this.deck = [];
-        this.types = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"];
-        this.suits = [":hearts:", ":spades:", ":clubs:", ":diamonds:"];
-        for (let type in this.types) {
-            for (let suit in this.suits) {
-                this.deck.push("|" + type + " " + suit + "|")
+        this.ranks = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"];
+        this.suites = [":hearts:", ":spades:", ":clubs:", ":diamonds:"];
+        for (let rank in this.ranks) {
+            for (let suite in this.suites) {
+                this.deck.push(new Card(suite, rank));
             }
         }
     }
