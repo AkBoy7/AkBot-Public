@@ -31,6 +31,7 @@ const antiSpam = new AntiSpam({
     ignoredUsers: ignoreList, // Array of User IDs that get ignored.
 });
 
+
 //all the commands AkBot currently supports
 const ak = require("./commands/ak.js");
 const gif = require("./commands/gif.js");
@@ -43,10 +44,21 @@ const bet = require("./commands/bet.js");
 const bids = require("./commands/bids.js");
 const coinflip = require("./commands/coinflip.js");
 const app = require("./commands/app.js");
-const commands = { ak, gif, akpic, detect, ignore, points, dm, bet, bids, coinflip, app };
+const remindMe = require("./commands/remindMe.js");
+const commands = { ak, gif, akpic, detect, ignore, points, dm, bet, bids, coinflip, app, remindMe};
+const cron = require('cron');
 
 module.exports = async function (msg) {
     const client = msg.client;
+
+    let scheduledMessage = new cron.CronJob('12 04 00 * * *', () => {
+      // This runs every day at 10:30:00, you can do anything you want
+      let channel = client.channels.cache.get(process.env.TEST_CHANNELID);
+      channel.send("test, this message is send every day at 12?");
+    });
+    
+    // When you want to start it, use:
+    scheduledMessage.start()
 
     if (msg.channel.id != process.env.TEST_CHANNELID) {
         return;
