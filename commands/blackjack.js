@@ -107,8 +107,9 @@ function generateMessage(playerCards, dealerCards) {
 
 function printCards(cards) {
     let string = "";
-    for (let i = 0; i < cards.length; i++) {
-        string = string + cards[i] + " ";
+    for (let card in cards) {
+        // Empty space at the end, should be fine
+        string = string + card.printCard() + " ";
     }
     return string;
 }
@@ -146,6 +147,7 @@ function calculateScore(cards) {
         }
     }
 
+    // The value returned could be an empty array, the normal code should deal with this appropriately
     return sums;
 }
 
