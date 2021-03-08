@@ -2,6 +2,7 @@ const checkRole = require("./methods/checkRole");
 const read = require("./methods/read.js");
 const write = require("./methods/write.js");
 const locked = require("./methods/locked.js");
+const validAmount = require("./methods/validAmount.js");
 
 function globalList(word, array) {
     if (array.includes(word)) {
@@ -32,7 +33,7 @@ module.exports = function (msg, args) {
         if (command === "win" || command === "loss" || command === "cancel") {
             //If command is not complete !bids win teamName 
             if (args.length < 1) {
-                msg.channel.send("Use the correct command: ```!bids win/lose/cancel teamname```");
+                msg.channel.send("Use the correct command: ```!bids win/lose/cancel teamname ratio```");
                 return;
             }
             let teamName = args.shift().toLowerCase();
@@ -54,8 +55,8 @@ module.exports = function (msg, args) {
             }
 
             let odds = parseFloat(args.shift());
-            if (odds < 1 || odds > 2) {
-                msg.channel.send("Please make sure that the ratio is at least 1 and at most 2");
+            if (odds < 1 || odds > 4) {
+                msg.channel.send("Please make sure that the ratio is at least 1 and at most 4");
                 return;
             }
 
@@ -132,7 +133,7 @@ module.exports = function (msg, args) {
                             user.points += pointsBet;
                             client.setScore.run(user);
         
-                            msg.channel.send("Bet canceled bet AkPoints refunded to <@" + user.id + "> " + pointsBet + " AkPoints.");
+                            msg.channel.send("Bet canceled, AkPoints refunded to <@" + user.id + "> " + pointsBet + " AkPoints.");
                             break;
                         }
                     }

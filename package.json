@@ -13,6 +13,7 @@
   "dependencies": {
     "badwords": "^1.0.0",
     "better-sqlite3": "^7.1.2",
+    "cron": "^1.8.2",
     "discord-anti-spam": "^2.4.1",
     "discord.js": "^12.5.1",
     "dotenv": "^8.2.0",

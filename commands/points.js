@@ -6,6 +6,7 @@ const generateScore = require('./methods/generateScore');
 const freePoints = 300;
 
 const checkRole = require("./methods/checkRole.js");
+const read = require('./methods/read');
 require('dotenv').config();
 
 module.exports = async function (msg, args) {
@@ -23,7 +24,7 @@ module.exports = async function (msg, args) {
 
     // Increment the score by a set amount, has a cooldown for each user
     if (args.length == 0) {
-        msg.reply(`You currently have ${score.points} AkPoints! `+ "For more information use: ```!points help```");
+        msg.reply(`You currently have ${score.points} AkPoints! ` + "For more information use: ```!points help```");
         return;
     } else if (args[0] === "help") {
         msg.channel.send("AkPoints do not have any value or meaning other then to flex on your friends on the leaderboard.\nYou get AkPoints by typing `!points get` and also by joining our acitivities.\nYou can also get more AkPoints by betting them on your favorite teams, use `!bet` command for more information.");
@@ -32,13 +33,21 @@ module.exports = async function (msg, args) {
 
         if (score.cooldown !== 0 && cooldown - (Date.now() - score.cooldown) > 0) {
             // If user still has a cooldown
-            const remaining = humanizeDuration(cooldown - (Date.now() - score.cooldown), { delimiter: " and ", round: true, units: ["d", "h", "m"]});
+            const remaining = humanizeDuration(cooldown - (Date.now() - score.cooldown), { delimiter: " and ", round: true, units: ["d", "h", "m"] });
             msg.channel.send(`Wait ${remaining} before typing this command again. ` + "<@" + msg.author.id + ">.");
         } else {
+            let alreadyReminded = read("./commands/reminderDone.json");
+            if (alreadyReminded.includes(msg.author.id)) {
+                const index = alreadyReminded.indexOf(msg.author.id);
+                if (index > -1) {
+                    alreadyReminded.splice(index, 1);
+                    write(alreadyReminded, "./commands/reminderDone.json");
+                }
+            }
             score.points += freePoints;
             score.cooldown = Date.now();
             client.setScore.run(score);
-            const remaining = humanizeDuration(cooldown - (Date.now() - score.cooldown), { delimiter: " and ", round: true, units: ["d", "h", "m"]});
+            const remaining = humanizeDuration(cooldown - (Date.now() - score.cooldown), { delimiter: " and ", round: true, units: ["d", "h", "m"] });
             msg.reply("You have gained " + freePoints + ` AkPoints and currently you have ${score.points} AkPoints! You can use this command again after ${remaining}`);
         }
     } else if (checkRole("Board", msg) || checkRole("Moderator", msg)) {

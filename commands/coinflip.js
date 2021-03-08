@@ -1,4 +1,7 @@
 const validAmount = require("./methods/validAmount.js");
+const generateScore = require("./methods/generateScore");
+const parsePoints = require("./methods/parsePoints");
+
 module.exports = function (msg, args) {
     // Start by flipping it :)
     const flip = Math.random();
@@ -8,14 +11,7 @@ module.exports = function (msg, args) {
     let score = client.getScore.get(msg.author.id);
     // Creates new table if user does not have one yet
     if (!score) {
-        score = {
-            id: `${msg.author.id}`,
-            user: msg.author.id,
-            points: 0,
-            bids: "",
-            amount: "",
-            cooldown: 0
-        }
+        score = generateScore(msg)
     }
     // User has not specified it wants to bet points
     if (args.length === 0) {
@@ -34,7 +30,8 @@ module.exports = function (msg, args) {
     // User predicts heads or tails and made a bet (and if the user filled in more, ignore it)
     } else if (args.length >= 2) {
         let predicted = args[0].toUpperCase();
-        const bet = parseInt(args[1], 10);
+
+        let bet = parsePoints(args[1], score);
 
         // Check whether the predicted is valid
         if (predicted !== "HEADS" && predicted !== "TAILS") {
@@ -45,6 +42,10 @@ module.exports = function (msg, args) {
         if (!validAmount(score, bet, msg)) {
             return;
         }
+
+        // Already subtract the points and update the client score
+        score.points = score.points - bet;
+        client.setScore.run(score);
 
         // Check whether the user has made a valid prediction
         msg.channel.send("Flipping coin, you predicted `" + predicted + "` with `" + bet + "` AkPoints at risk...");
@@ -62,15 +63,16 @@ module.exports = function (msg, args) {
 
         // Remove/Add to balance
         setTimeout(()=> {
+            let score = client.getScore.get(msg.author.id);
             if (predicted === result) {
                 msg.channel.send("Wow it's actually `" + result + "`, `" + bet + "` AkPoints have been added to your balance!");
-                score.points = score.points + bet;
+                // Double the points because the original bet has already been deducted
+                score.points = score.points + bet*2;
+                client.setScore.run(score);
             } else {
                 msg.channel.send("Welp, you predicted incorrectly, it was `" + result + "`, `" + bet + "` AkPoints have been removed from your balance!");
-                score.points = score.points - bet;
             }
-            msg.channel.send("Your new total is `" + score.points + "`"); 
-            client.setScore.run(score)
+            msg.channel.send("Your new total is `" + score.points + "`");
         }, 1500)
     } else {
         msg.channel.send("To use coinflip either use ```!coinflip``` or ```!coinflip heads/tails amount```")
