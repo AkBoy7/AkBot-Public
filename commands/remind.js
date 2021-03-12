@@ -1,5 +1,6 @@
 const read = require("./methods/read.js");
 const write = require("./methods/write.js");
+const generateScore = require("./methods/generateScore.js");
 const cooldown = 172800000; //2 days
 
 require('dotenv').config();
@@ -17,7 +18,8 @@ module.exports = function (client) {
 
                 //creates mew table if user does not have one yet
                 if (!score) {
-                    score = generateScore(msg);
+                    console.log("score not found for " + remindedUser);
+                    return;
                 }
     
                 //check for cooldown

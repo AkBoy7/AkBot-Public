@@ -7,6 +7,7 @@ const freePoints = 300;
 
 const checkRole = require("./methods/checkRole.js");
 const read = require('./methods/read');
+const write = require('./methods/write');
 require('dotenv').config();
 
 module.exports = async function (msg, args) {
@@ -63,7 +64,8 @@ module.exports = async function (msg, args) {
                     user: nameID,
                     points: 0,
                     bids: "",
-                    amount: ""
+                    amount: "",
+                    cooldown: 0
                 }
             }
 
