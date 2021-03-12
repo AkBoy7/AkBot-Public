@@ -28,7 +28,7 @@ module.exports = async function (msg, args) {
         msg.reply(`You currently have ${score.points} AkPoints! ` + "For more information use: ```!points help```");
         return;
     } else if (args[0] === "help") {
-        msg.channel.send("AkPoints do not have any value or meaning other then to flex on your friends on the leaderboard.\nYou get AkPoints by typing `!points get` and also by joining our acitivities.\nYou can also get more AkPoints by betting them on your favorite teams, use `!bet` command for more information.");
+        msg.channel.send("AkPoints do not have any value or meaning other then to flex on your friends on the leaderboard.\nYou get AkPoints by typing `!points get` and also by joining our acitivities.\n AkBot can remind you when your cooldown is over with `!remindMe`. You can also get more AkPoints by betting them on your favorite teams, use `!bet` command for more information.");
     } else if (args[0] === "get") {
         console.log("AkPoints requested by " + msg.author.username);
 
