@@ -45,7 +45,8 @@ const bids = require("./commands/bids.js");
 const coinflip = require("./commands/coinflip.js");
 const app = require("./commands/app.js");
 const remindMe = require("./commands/remindMe.js");
-const commands = { ak, gif, akpic, detect, ignore, points, dm, bet, bids, coinflip, app, remindMe};
+const music = require("./commands/music.js");
+const commands = { ak, gif, akpic, detect, ignore, points, dm, bet, bids, coinflip, app, remindMe, music};
 
 module.exports = async function (msg) {
     const client = msg.client;
