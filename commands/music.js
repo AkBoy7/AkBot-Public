@@ -3,9 +3,10 @@ const ytdl = require('ytdl-core');
 const queue = new Map();
 
 module.exports = async function (msg, args) {
-  if (msg.channel.id != process.env.MUSIC_CHANNEL_ID) {
-    return;
-  }
+  //if (msg.channel.id != process.env.MUSIC_CHANNEL_ID) {
+  //  msg.channel.send("You are in the wrong text channel to use this command, please use <#" + process.env.MUSIC_CHANNEL_ID + "> channel")
+  //  return;
+  //}
 
   const serverQueue = queue.get(msg.guild.id);
   if (args.length == 0) {
@@ -20,6 +21,15 @@ module.exports = async function (msg, args) {
 }
 
 async function execute(msg, serverQueue, args) {
+  const voiceChannel = msg.member.voice.channel;
+  if (!voiceChannel) {
+    return msg.channel.send("You need to be in a voice channel to play music!");
+  }
+  const permissions = voiceChannel.permissionsFor(msg.client.user);
+  if (!permissions.has("CONNECT") || !permissions.has("SPEAK")) {
+    return msg.channel.send("I need the permissions to join and speak in your voice channel!");
+  }
+
   const songInfo = await ytdl.getInfo(args[1]);
   const song = {
     title: songInfo.videoDetails.title,
@@ -27,7 +37,6 @@ async function execute(msg, serverQueue, args) {
   };
 
   if (!serverQueue) {
-    const voiceChannel = msg.member.voice.channel;
     const queueContruct = {
       textChannel: msg.channel,
       voiceChannel: voiceChannel,
@@ -51,7 +60,7 @@ async function execute(msg, serverQueue, args) {
       // Printing the error message if the bot fails to join the voicechat
       console.log(err);
       queue.delete(msg.guild.id);
-      return msg.channel.send("You need to be in a voice chat!");
+      return msg.channel.send("You need to be in a voice chat, if you are in one then make sure the bot has enough permission to join the channel!");
      }
 
   } else {

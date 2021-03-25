@@ -46,13 +46,18 @@ const coinflip = require("./commands/coinflip.js");
 const app = require("./commands/app.js");
 const remindMe = require("./commands/remindMe.js");
 const music = require("./commands/music.js");
-const commands = { ak, gif, akpic, detect, ignore, points, dm, bet, bids, coinflip, app, remindMe, music};
+const event = require("./commands/event.js");
+const commands = { ak, gif, akpic, detect, ignore, points, dm, bet, bids, coinflip, app, remindMe, music, event};
 
 module.exports = async function (msg) {
     const client = msg.client;
 
     if (msg.channel.id != process.env.TEST_CHANNELID) {
         return;
+    }
+
+    if(msg.type === "PINS_ADD" && msg.author.bot) {
+        msg.delete();
     }
     
     //ignore dms and send them to AkBoy
