@@ -1,6 +1,6 @@
 const Card = require("./card");
 module.exports = class Deck {
-    constructor() {
+    constructor(client) {
         const hearts = client.emojis.find(emoji => emoji.name === "hearts");
         const spades = client.emojis.find(emoji => emoji.name === "spades");
         const clubs = client.emojis.find(emoji => emoji.name === "clubs");

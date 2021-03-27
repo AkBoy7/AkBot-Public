@@ -18,7 +18,7 @@ module.exports = async function (msg, args) {
 
     // TODO: REMOVE THE USER POINTS / CHECK IF THE USER HAS ENOUGH POINTS
 
-    let deck = new deckSetup();
+    let deck = new deckSetup(client);
 
     let dealer = [deck.drawSingle()];
     let player = deck.drawMultiple(2);
@@ -51,9 +51,10 @@ module.exports = async function (msg, args) {
             // TODO PROBABLY REMOVE THIS LINE
             msg.channel.send("User did not type a message in 10 seconds");
         } else {
-            msg.channel.send("DEBUG: Fetched message contained: " + collected.first().content);
+            const first = collected.first().content;
+            msg.channel.send("DEBUG: Fetched message contained: " + first);
             for (let i = 0; i < options.length; i++) {
-                if (collected.first().content.toUpperCase() === options[i]) {
+                if (first.toUpperCase() === options[i]) {
                     optionNumber = i;
                     break;
                 }
