@@ -62,14 +62,14 @@ module.exports = async function (msg, args) {
         }
         msg.channel.send("DEBUG: The optionnumber is " + optionNumber);
         // STAND
-        if (optionNumber === 1) {
+        if (optionNumber === 0) {
             dealer.push(deck.drawSingle());
         // HIT
-        } else if (optionNumber === 2) {
+        } else if (optionNumber === 1) {
             player.push(deck.drawSingle());
         // TODO REMOVE MONEY
         // DOUBLE
-        } else if (optionNumber === 3) {
+        } else if (optionNumber === 2) {
             player.push(deck.drawSingle());
             dealer.push(deck.drawSingle());
             // The user has filled in a invalid option

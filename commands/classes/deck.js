@@ -1,13 +1,9 @@
 const Card = require("./card");
 module.exports = class Deck {
     constructor(client) {
-        const hearts = client.emojis.find(emoji => emoji.name === "hearts");
-        const spades = client.emojis.find(emoji => emoji.name === "spades");
-        const clubs = client.emojis.find(emoji => emoji.name === "clubs");
-        const diamonds = client.emojis.find(emoji => emoji.name === "diamonds");
         this.deck = [];
         this.ranks = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"];
-        this.suites = [hearts, spades, clubs, diamonds];
+        this.suites = ["❤", "♠", "♣", "♦"];
         for (let rank in this.ranks) {
             for (let suite in this.suites) {
                 this.deck.push(new Card(suite, rank));
