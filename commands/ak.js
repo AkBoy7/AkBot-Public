@@ -8,8 +8,8 @@ module.exports = function (msg, args) {
         .setDescription('Made by Akam\nIf you experience any issues with this bot please contact AkBob')
         .setThumbnail('https://i.imgur.com/mXodbnH.png')
         .addFields(
-            { name: 'User commands', value: '!ak \n!gif \n!akpic \n!points \n!bet\n !coinflip\n', inline: true },
-            { name: 'Description', value: 'Gives a list of commands \nSearches and sends a gif \nGet a random picture of Akam \nRecieve AkPoints to bet with \nBet on DCL teams with AkPoints\nFlip a coin and bet on the result', inline: true },
+            { name: 'User commands', value: '!ak \n!gif \n!akpic \n!points \n!bet\n !coinflip\n!music\n', inline: true },
+            { name: 'Description', value: 'Gives a list of commands \nSearches and sends a gif \nGet a random picture of Akam \nRecieve AkPoints to bet with \nBet on DCL teams with AkPoints\nFlip a coin and bet on the result\nPlay songs in your channels', inline: true },
             { name: '\u200B', value: '\u200B' },
         )
         .addFields(

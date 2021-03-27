@@ -46,7 +46,9 @@ const coinflip = require("./commands/coinflip.js");
 const app = require("./commands/app.js");
 const blackjack = require("./commands/blackjack.js");
 const remindMe = require("./commands/remindMe.js");
-const commands = { ak, gif, akpic, detect, ignore, points, dm, bet, bids, coinflip, app, remindMe, blackjack };
+const music = require("./commands/music.js");
+const event = require("./commands/event.js");
+const commands = { ak, gif, akpic, detect, ignore, points, dm, bet, bids, coinflip, app, remindMe, music, event, blackjack};
 
 module.exports = async function (msg) {
     const client = msg.client;
@@ -54,7 +56,11 @@ module.exports = async function (msg) {
     if (msg.channel.id != process.env.TEST_CHANNELID) {
         return;
     }
-    
+
+    if(msg.type === "PINS_ADD" && msg.author.bot) {
+        msg.delete();
+    }
+
     //ignore dms and send them to AkBoy
     if (msg.channel.type == "dm" && !(msg.author.username === "AkBoy" || msg.author.username === "AkBot")) {
         console.log(msg.author.username + " is dming with AkBot:");
