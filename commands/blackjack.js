@@ -89,20 +89,22 @@ function generateMessage(playerCards, dealerCards) {
     for (let i = 0; i < playerScoreArray.length; i++) {
         if (i !== 0) {
             playerScore += " or " + playerScoreArray[i];
+        } else {
+            playerScore += playerScoreArray[i];
         }
-        playerScore = playerScore + playerScoreArray[i];
     }
     let dealerScoreArray = calculateScore(dealerCards);
     let dealerScore = "The dealer its score is ";
     for (let i = 0; i < dealerScoreArray.length; i++) {
         if (i !== 0) {
             dealerScore += " or " + dealerScoreArray[i];
+        } else {
+            dealerScore += dealerScoreArray[i];
         }
-        dealerScore = dealerScore + dealerScoreArray[i]
     }
     return "```" +
-        printCards(dealerCards) + "\n" +
-        printCards(playerCards) + "\n" +
+        "Dealer: " + printCards(dealerCards) + "\n" +
+        "Player: " + printCards(playerCards) + "\n" +
         dealerScore + "\n" +
         playerScore +
         "```";
@@ -129,16 +131,22 @@ function calculateScore(cards) {
             sums[0] += card.getValue();
         });
     }
+    for (let i = 0; i < aces; i++) {
+        sums.push(sums[0]);
+    }
+    for (let i = 0; i < aces; i++) {
+        sums[i] = sums[i] - i*10;
+    }
     // If there are 2 aces, create new copies of sums[0]
     // So in total we have an array with length 3
     // First index will not get touched
     // Index 2 will get its score - 10
     // Index 3 will get its score - 20
     // This is to account for all the possible aces scores
-    for (let i = 0; i < aces; i++) {
-        sums.push(sums[0]);
-        sums[i] = sums[i] - i*10;
-    }
+    // for (let i = 0; i < aces; i++) {
+    //     sums.push(sums[0]);
+    //     sums[i] = sums[i] - i*10;
+    // }
 
     // Remove all values that are invalid
     // Has to be done front to back in order to not get index out of bounds/missing values
