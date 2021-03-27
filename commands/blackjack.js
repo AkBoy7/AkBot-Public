@@ -108,7 +108,7 @@ function generateMessage(playerCards, dealerCards) {
 function printCards(cards) {
     let string = "";
     for (let card in cards) {
-        if (cards.hasOwnProperty(card)) {
+        if (cards.hasOwnProperty(card) && card.hasOwnProperty('printCard')) {
             // Empty space at the end, should be fine
             string = string + card.printCard() + " ";
         }
@@ -123,7 +123,7 @@ function calculateScore(cards) {
     // Count up all the card values
     if (Array.isArray(cards)) {
         for (let card in cards) {
-            if (cards.hasOwnProperty(card)) {
+            if (cards.hasOwnProperty(card) && card.hasOwnProperty('getRank')) {
                 if (card.getRank() === "A") {
                     aces++;
                 }
