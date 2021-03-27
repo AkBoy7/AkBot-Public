@@ -131,26 +131,22 @@ function calculateScore(cards) {
             sums[0] += card.getValue();
         });
     }
-    for (let i = 0; i < aces; i++) {
-        sums.push(sums[0]);
-    }
-    for (let i = 0; i < aces; i++) {
-        sums[i] = sums[i] - i*10;
-    }
     // If there are 2 aces, create new copies of sums[0]
     // So in total we have an array with length 3
     // First index will not get touched
     // Index 2 will get its score - 10
     // Index 3 will get its score - 20
     // This is to account for all the possible aces scores
-    // for (let i = 0; i < aces; i++) {
-    //     sums.push(sums[0]);
-    //     sums[i] = sums[i] - i*10;
-    // }
+    for (let i = 0; i < aces; i++) {
+        sums.push(sums[0]);
+    }
+    for (let i = 1; i < sums.length; i++) {
+        sums[i] = sums[i] - i*10;
+    }
 
     // Remove all values that are invalid
     // Has to be done front to back in order to not get index out of bounds/missing values
-    let n = sums.length;
+    let n = sums.length-1;
     for (let i = n; i >= 0; i--) {
         if (sums[i] <= 0 || sums[i] > 21) {
             sums.splice(i, 1);
