@@ -5,7 +5,7 @@ const reminder = require('./commands/remind.js');
 
 const Discord = require('discord.js');
 const client = new Discord.Client({
-    partials: ["MESSAGE"]
+    partials: ['MESSAGE', 'CHANNEL', 'REACTION']
 });
 const SQLite = require("better-sqlite3");
 const sql = new SQLite('./akbotData.sqlite');
@@ -20,9 +20,13 @@ function readyDiscord() {
     reminder(client);
     console.log('---login succesfull, bot is online---');
 }
-const commandHandler = require("./commands")
+const commandHandler = require("./commands");
+const {gotReaction, removeReaction} = require('./reactions.js');
 
 client.on('message', commandHandler);
+
+client.on("messageReactionAdd", gotReaction);
+client.on("messageReactionRemove", removeReaction);
 
 function setupSQL() {
     // Check if the table "points" exists.

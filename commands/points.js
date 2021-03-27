@@ -7,6 +7,7 @@ const freePoints = 300;
 
 const checkRole = require("./methods/checkRole.js");
 const read = require('./methods/read');
+const write = require('./methods/write');
 require('dotenv').config();
 
 module.exports = async function (msg, args) {
@@ -27,7 +28,7 @@ module.exports = async function (msg, args) {
         msg.reply(`You currently have ${score.points} AkPoints! ` + "For more information use: ```!points help```");
         return;
     } else if (args[0] === "help") {
-        msg.channel.send("AkPoints do not have any value or meaning other then to flex on your friends on the leaderboard.\nYou get AkPoints by typing `!points get` and also by joining our acitivities.\nYou can also get more AkPoints by betting them on your favorite teams, use `!bet` command for more information.");
+        msg.channel.send("AkPoints do not have any value or meaning other then to flex on your friends on the leaderboard.\nYou get AkPoints by typing `!points get` and also by joining our acitivities.\n AkBot can remind you when your cooldown is over with `!remindMe`. You can also get more AkPoints by betting them on your favorite teams, use `!bet` command for more information.");
     } else if (args[0] === "get") {
         console.log("AkPoints requested by " + msg.author.username);
 
@@ -53,7 +54,6 @@ module.exports = async function (msg, args) {
     } else if (checkRole("Board", msg) || checkRole("Moderator", msg)) {
         //Moderator specific messages
         let nameID = args[1].substring(3, args[1].length - 1);
-        console.log(nameID);
         if (nameID != null) {
             let userScore = client.getScore.get(nameID);
             console.log(userScore);
@@ -63,7 +63,8 @@ module.exports = async function (msg, args) {
                     user: nameID,
                     points: 0,
                     bids: "",
-                    amount: ""
+                    amount: "",
+                    cooldown: 0
                 }
             }
 

@@ -11,16 +11,19 @@
   "author": "Akam Bilbas",
   "license": "ISC",
   "dependencies": {
+    "@discordjs/opus": "^0.5.0",
     "badwords": "^1.0.0",
     "better-sqlite3": "^7.1.2",
     "cron": "^1.8.2",
     "discord-anti-spam": "^2.4.1",
     "discord.js": "^12.5.1",
     "dotenv": "^8.2.0",
+    "ffmpeg-static": "^4.2.8",
     "humanize-duration": "^3.25.1",
     "node-fetch": "^2.6.1",
     "node-gyp": "^7.1.2",
-    "quick.db": "^7.1.3"
+    "quick.db": "^7.1.3",
+    "ytdl-core": "^4.5.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.6"
