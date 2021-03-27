@@ -1,4 +1,4 @@
-const Card = require("card");
+const Card = require("./card");
 module.exports = class Deck {
     constructor() {
         this.deck = [];
