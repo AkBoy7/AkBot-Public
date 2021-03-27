@@ -108,8 +108,10 @@ function generateMessage(playerCards, dealerCards) {
 function printCards(cards) {
     let string = "";
     for (let card in cards) {
-        // Empty space at the end, should be fine
-        string = string + card.printCard() + " ";
+        if (cards.hasOwnProperty(card)) {
+            // Empty space at the end, should be fine
+            string = string + card.printCard() + " ";
+        }
     }
     return string;
 }
@@ -121,10 +123,12 @@ function calculateScore(cards) {
     // Count up all the card values
     if (Array.isArray(cards)) {
         for (let card in cards) {
-            if (card.getRank() === "A") {
-                aces++;
+            if (cards.hasOwnProperty(card)) {
+                if (card.getRank() === "A") {
+                    aces++;
+                }
+                sums[0] += card.getValue();
             }
-            sums[0] += card.getValue();
         }
     }
     // If there are 2 aces, create new copies of sums[0]
