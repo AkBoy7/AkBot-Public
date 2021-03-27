@@ -88,7 +88,7 @@ function generateMessage(playerCards, dealerCards) {
     let playerScore = "Your score is ";
     for (let i = 0; i < playerScoreArray.length; i++) {
         if (i !== 0) {
-            playerScore = " or " + playerScore;
+            playerScore += " or " + playerScoreArray[i];
         }
         playerScore = playerScore + playerScoreArray[i];
     }
@@ -96,14 +96,16 @@ function generateMessage(playerCards, dealerCards) {
     let dealerScore = "The dealer its score is ";
     for (let i = 0; i < dealerScoreArray.length; i++) {
         if (i !== 0) {
-            dealerScore = " or " + dealerScore ;
+            dealerScore += " or " + dealerScoreArray[i];
         }
         dealerScore = dealerScore + dealerScoreArray[i]
     }
-    return printCards(dealerCards) + "\n" +
+    return "```" +
+        printCards(dealerCards) + "\n" +
         printCards(playerCards) + "\n" +
         dealerScore + "\n" +
-        playerScore;
+        playerScore +
+        "```";
 }
 
 function printCards(cards) {
@@ -146,6 +148,7 @@ function calculateScore(cards) {
             sums.splice(i, 1);
         }
     }
+    // TODO: Als er geen valid scores zijn, print dan invalid score uit
 
     // The value returned could be an empty array, the normal code should deal with this appropriately
     return sums;
