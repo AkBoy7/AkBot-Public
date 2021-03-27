@@ -110,14 +110,6 @@ function printCards(cards) {
     cards.forEach(card => {
         string = string + card.printCard() + " ";
     });
-    // for (let card in cards) {
-    //     if (cards.hasOwnProperty(card) && card.hasOwnProperty('printCard')) {
-    //         // Empty space at the end, should be fine
-    //         string = string + card.printCard() + " ";
-    //     } else {
-    //         console.log("Card missing property");
-    //     }
-    // }
     return string;
 }
 
@@ -133,14 +125,6 @@ function calculateScore(cards) {
             }
             sums[0] += card.getValue();
         });
-        // for (let card in cards) {
-        //     if (cards.hasOwnProperty(card) && card.hasOwnProperty('getRank')) {
-        //         if (card.getRank() === "A") {
-        //             aces++;
-        //         }
-        //         sums[0] += card.getValue();
-        //     }
-        // }
     }
     // If there are 2 aces, create new copies of sums[0]
     // So in total we have an array with length 3
