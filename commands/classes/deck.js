@@ -3,12 +3,12 @@ module.exports = class Deck {
     constructor(client) {
         this.deck = [];
         this.ranks = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"];
-        this.suites = ["❤", "♠", "♣", "♦"];
-        for (let rank in this.ranks) {
-            for (let suite in this.suites) {
-                this.deck.push(new Card(suite, rank));
-            }
-        }
+        this.suites = ["❤", "♣", "♠", "♦"];
+        this.ranks.forEach(rank => {
+           this.suites.forEach(suite => {
+               this.deck.push(new Card(suite, rank));
+           });
+        });
     }
 
     // Returns the deck
