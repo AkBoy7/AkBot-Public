@@ -2,6 +2,8 @@ const deckSetup = require("./classes/deck.js");
 const Card = require("./classes/card");
 const generateScore = require("./methods/generateScore");
 
+// TODO: Make it reaction based
+// TODO: Make it such that a single user can only play one game at the time
 module.exports = async function (msg, args) {
     const client = msg.client;
     let score = client.getScore.get(msg.author.id);
@@ -86,7 +88,9 @@ module.exports = async function (msg, args) {
                 playerTurn = false;
                 dealerTurn = false;
                 gameOver = true;
-                dealer.push(deck.drawSingle());
+                if (dealer.length !== 2) {
+                    dealer.push(deck.drawSingle());
+                }
                 msg.channel.send("You lost, your score is higher than 21");
             }
 
