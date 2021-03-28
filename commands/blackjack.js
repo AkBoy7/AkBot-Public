@@ -104,7 +104,7 @@ module.exports = async function (msg, args) {
             } else {
                 // Keep drawing until 17 or higher
                 if (arr[0] < 17) {
-                    dealer.push((deck.drawSingle))
+                    dealer.push(deck.drawSingle);
                 } else {
                     dealerTurn = false;
                 }
