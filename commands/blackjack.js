@@ -104,7 +104,7 @@ module.exports = async function (msg, args) {
             } else {
                 // Keep drawing until 17 or higher
                 if (arr[0] < 17) {
-                    dealer.push(deck.drawSingle);
+                    dealer.push(deck.drawSingle());
                 } else {
                     dealerTurn = false;
                 }
@@ -224,7 +224,6 @@ function calculateScore(cards) {
             sums.splice(i, 1);
         }
     }
-    // TODO: Als er geen valid scores zijn, print dan invalid score uit
 
     // The value returned could be an empty array, the normal code should deal with this appropriately
     return sums;
