@@ -73,6 +73,7 @@ module.exports = async function (msg, args) {
                 player.push(deck.drawSingle());
                 dealer.push(deck.drawSingle());
                 playerTurn = false;
+                dealerTurn = false;
 
             // The user has filled in an invalid option
             } else {
@@ -82,6 +83,7 @@ module.exports = async function (msg, args) {
 
             // Scenario where player killed itself
             if (calculateScore(player).length === 0) {
+                playerTurn = false;
                 dealerTurn = false;
                 gameOver = true;
                 dealer.push(deck.drawSingle());
@@ -142,7 +144,6 @@ async function collecting(msg, options) {
         msg.channel.send("User did not type a message in 10 seconds");
     } else {
         const first = collected.first().content;
-        msg.channel.send("DEBUG: Fetched message contained: " + first);
         for (let i = 0; i < options.length; i++) {
             if (first.toUpperCase() === options[i]) {
                 optionNumber = i;
@@ -150,7 +151,6 @@ async function collecting(msg, options) {
             }
         }
     }
-    msg.channel.send("DEBUG: The optionnumber is " + optionNumber);
     return optionNumber;
 }
 
