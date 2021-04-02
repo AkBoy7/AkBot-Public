@@ -110,7 +110,7 @@ module.exports = function (msg, args) {
 
     //Everything is fine
     score.bids = score.bids + teamName + ",";
-    score.amount = score.amount + args[0] + ",";
+    score.amount = score.amount + bet + ",";
     score.points = score.points - bet;
     client.setScore.run(score);
     msg.channel.send("You have bet " + bet + " AkPoints for " + teamName + ". Your current total AkPoints is " + score.points + ".");
