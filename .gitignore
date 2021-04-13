@@ -11,3 +11,7 @@ akbotData.sqlite-shm
 akbotData.sqlite
 
 commands/reminderDone.json
+
+node_modules/.bin/
+
+node_modules/

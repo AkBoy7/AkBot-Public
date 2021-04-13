@@ -43,8 +43,10 @@ module.exports = function (msg, args) {
                 userLeaderboard.push(":second_place: <@" + users[i].id + "> - " + users[i].points);
             } else if (i == 2) {
                 userLeaderboard.push(":third_place: <@" + users[i].id + "> - " + users[i].points);
-            } else {
+            } else if (i <= 9){
                 userLeaderboard.push(" <@" + users[i].id + "> - " + users[i].points);
+            } else {
+                break;
             }
         }
 
@@ -68,7 +70,7 @@ module.exports = function (msg, args) {
     }
 
     if (args.length != 2) {
-        msg.channel.send("To bid for a team use ```!bid teamName betAmount```");
+        msg.channel.send("To bet for a team use ```!bet teamName betAmount```");
         return;
     }
 
