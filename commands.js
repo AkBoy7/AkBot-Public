@@ -40,18 +40,20 @@ const detect = require("./commands/detect.js");
 const ignore = require("./commands/ignore.js");
 const points = require("./commands/points.js");
 const dm = require("./commands/dm.js");
-const bet = require("./commands/bet.js");
+const OLDbet = require("./commands/bet.js");
 const bids = require("./commands/bids.js");
 const coinflip = require("./commands/coinflip.js");
 const app = require("./commands/app.js");
 const remindMe = require("./commands/remindMe.js");
 const music = require("./commands/music.js");
 const event = require("./commands/event.js");
+const bet = require("./commands/newbet.js");
 const commands = { ak, gif, akpic, detect, ignore, points, dm, bet, bids, coinflip, app, remindMe, music, event};
 
 module.exports = async function (msg) {
     const client = msg.client;
 
+    //for testing in specific channel
     if (msg.channel.id != process.env.TEST_CHANNELID) {
         return;
     }

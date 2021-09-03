@@ -2,10 +2,10 @@ const checkRole = require("./methods/checkRole.js");
 const write = require("./methods/write.js");
 const read = require("./methods/read.js");
 const Discord = require('discord.js');
-const freeEventPoints = 600;
+const freeEventPoints = 800;
 
 //!event add name Of Event -> start a pol for an event
-//!event accept -> give all of the users who reacted 500 AkPoints and removes last event.
+//!event accept -> give all of the users who reacted 800 AkPoints and removes last event.
 module.exports = async function (msg, args) {
     if (!(checkRole("Board", msg) || checkRole("Moderator", msg))) {
         msg.channel.send("You do not have permissions for this command.");
