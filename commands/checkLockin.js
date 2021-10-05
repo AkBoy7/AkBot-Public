@@ -16,7 +16,7 @@ module.exports = function (client) {
                     bet.locked = 1;
                     client.setBet.run(bet);
                     client.users.fetch(nameID).then(user => {
-                        user.send(`Your bet: ${bet.title} lock in time has passed. Bets have been locked in.`);
+                        user.send(`Your bet: ${bet.title} lock in time has passed. Bets have been locked in. Please Once the results are in use !bet win option id`);
                     });
                     akbotChannel = client.channels.cache.get(process.env.AKBOT_CHANNEL_ID);
                     akbotChannel.send("Bets for `" + bet.title + "` has been locked in!");

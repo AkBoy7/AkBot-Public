@@ -53,7 +53,7 @@ module.exports = async function (msg, args) {
             .setColor('#D9D023')
             .setTitle('Current possible bets')
             .setAuthor('AkBot', 'https://i.imgur.com/y21mVd6.png')
-            .setDescription("You can bet by typing in the command !bet followed with the id of the bet, then the team/option written as 1 or 2. Finally, at the end of the command the amount of points. Example betting on a bet with an id on option 1 for 100 Akpoints: `!bet id 1 100`")
+            .setDescription("You can bet by typing in the command !bet followed with the id of the bet, then the team/option written as 1 or 2. Finally, at the end of the command the amount of points. Example betting on a bet with an id on option 1 for 100 Akpoints: `!bet id 1 100` \nIf there are no bets, try make your own with `!bet create`")
             .setThumbnail('https://i.imgur.com/mXodbnH.png')
             .addFields(
                 { name: 'Current bets', value: formattedBets + "------------"},
