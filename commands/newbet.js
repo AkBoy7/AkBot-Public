@@ -451,7 +451,7 @@ function applyResults(msg, args) {
 
             for (let i = 0; i < winnersIDs.length-1; i++) {
                 let userEntry = client.getScore.get(winnersIDs[i]);
-                let pointsGained = parseInt(parseInt(winnersAmount[i], 10) * currentBet.odds1, 10);
+                let pointsGained = parseInt(parseInt(winnersAmount[i], 10) * currentBet.odds2, 10);
                 userEntry.points += pointsGained;
                 client.setScore.run(userEntry);
                 msg.channel.send("<@" + winnersIDs[i] + "> has bet correctly and won " + pointsGained + " AkPoints.");
