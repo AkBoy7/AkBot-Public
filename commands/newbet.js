@@ -387,7 +387,7 @@ function bet(msg, args) {
             currentBet.amount2 = currentBet.amount2 + bet + ",";
             client.setScore.run(score);
             client.setBet.run(currentBet);
-            msg.channel.send(`You have betted ${bet} AkPoints on ${currentBet.title} for option 2 ${currentBet.option1}`);
+            msg.channel.send(`You have betted ${bet} AkPoints on ${currentBet.title} for option 2 ${currentBet.option2}`);
         } else {
             msg.channel.send("Unsure on what option you want to bet on, use 1 or 2 to indicate the option.")
             return;
