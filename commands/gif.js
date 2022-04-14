@@ -3,7 +3,7 @@ require('dotenv').config();
 
 module.exports = async function (msg, args) {
     console.log("Gif requested by " + msg.author.username);
-    if (msg.channel.id != process.env.MEMES_CHANNEL_ID) {
+    if (msg.channel.id != process.env.MEMES_CHANNEL_ID && msg.channel.id != "926634778529247272") {
         msg.channel.send('Please use <#' + process.env.MEMES_CHANNEL_ID + '> for this command.');
         return;
     }
