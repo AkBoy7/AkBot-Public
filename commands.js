@@ -34,6 +34,7 @@ const antiSpam = new AntiSpam({
 
 //all the commands AkBot currently supports
 const ak = require("./commands/ak.js");
+const help = require("./commands/ak.js");
 const gif = require("./commands/gif.js");
 const akpic = require("./commands/akpic.js");
 const detect = require("./commands/detect.js");
@@ -48,7 +49,8 @@ const remindMe = require("./commands/remindMe.js");
 const music = require("./commands/music.js");
 const event = require("./commands/event.js");
 const bet = require("./commands/newbet.js");
-const commands = { ak, gif, akpic, detect, ignore, points, dm, bet, bids, coinflip, app, remindMe, music, event};
+const wordle = require("./commands/wordleGuess.js")
+const commands = { ak, help, gif, akpic, detect, ignore, points, dm, bet, bids, coinflip, app, remindMe, music, event, wordle};
 
 module.exports = async function (msg) {
     const client = msg.client;

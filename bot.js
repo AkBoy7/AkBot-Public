@@ -3,10 +3,13 @@ console.log("Starting bot up! This bot was made by Akam");
 require('dotenv').config();
 const reminder = require('./commands/remind.js');
 const lockin = require('./commands/checkLockin.js');
+const wordleGenerator = require('./commands/wordleGenerator.js');
 
-const Discord = require('discord.js');
-const client = new Discord.Client({
-    partials: ['MESSAGE', 'CHANNEL', 'REACTION']
+// const Discord = require('discord.js');
+const { Client, Intents } = require('discord.js');
+const client = new Client({
+    partials: ['MESSAGE', 'CHANNEL', 'REACTION', 'GUILD_MEMBERS'],
+    intents: Intents.FLAGS.GUILD_MEMBERS
 });
 const SQLite = require("better-sqlite3");
 const sql = new SQLite('./akbotData.sqlite');
@@ -21,7 +24,12 @@ function readyDiscord() {
     setupSQLBets();
     reminder(client);
     lockin(client);
+    wordleGenerator(client);
     console.log('---login succesfull, bot is online---');
+    // const id = '157096621631471616';
+    // const guild = client.guilds.cache.get(id);
+    // console.log(guild.members);
+    // guild.members.cache.forEach((member) => console.log(member.user.username));
 }
 const commandHandler = require("./commands");
 const {gotReaction, removeReaction} = require('./reactions.js');
