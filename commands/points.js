@@ -53,7 +53,9 @@ module.exports = async function (msg, args) {
         }
     } else if (checkRole("Board", msg) || checkRole("Moderator", msg)) {
         //Moderator specific messages
-        let nameID = args[1].substring(3, args[1].length - 1);
+        const mentioneduser = msg.mentions.users.first();
+        const nameID = mentioneduser.id
+        //let nameID = args[1].substring(3, args[1].length - 1);
         if (nameID != null) {
             let userScore = client.getScore.get(nameID);
             console.log(userScore);
