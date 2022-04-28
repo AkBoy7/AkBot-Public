@@ -40,7 +40,7 @@ module.exports = function (msg, args) {
         guessedUsers.push(msg.author.id)
         let pointsDivided = parseInt(TOTALPOINTSWIN/guessedUsers.length, 10)
         guessedUsers.forEach(user => {
-            let score = client.getScore.get(msg.author.id);
+            let score = client.getScore.get(user);
             // Creates new table if user does not have one yet
             if (!score) {
                 score = generateScore(msg)
