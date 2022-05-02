@@ -17,18 +17,24 @@ module.exports = function (msg, guessString, rightGuessString) {
     let letterBlock = ''
     let letterColor = ''
     for (let i = 0; i < 5; i++) {
+        let letterPosition = rightGuess.indexOf(currentGuess[i])
+        if (currentGuess[i] === rightGuess[i]) {
+            rightGuess[letterPosition] = "$"
+        }
+    }
+    for (let i = 0; i < 5; i++) {
 
         let letter = currentGuess[i]
         letterBlock += `:regional_indicator_${letter}:`
         let letterPosition = rightGuess.indexOf(currentGuess[i])
         // is letter in the correct guess
-        if (letterPosition === -1) {
+        if (letterPosition === -1 && rightGuess[i] !== "$") {
             letterColor += ':red_square:'
         } else {
             // now, letter is definitely in word
             // if letter index and right guess index are the same
             // letter is in the right position 
-            if (currentGuess[i] === rightGuess[i]) {
+            if (currentGuess[i] === rightGuess[i] || rightGuess[i] === "$") {
                 // shade green 
                 letterColor += ':green_square:'
             } else {
