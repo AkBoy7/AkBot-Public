@@ -17,9 +17,8 @@ module.exports = function (msg, guessString, rightGuessString) {
     let letterBlock = ''
     let letterColor = ''
     for (let i = 0; i < 5; i++) {
-        let letterPosition = rightGuess.indexOf(currentGuess[i])
         if (currentGuess[i] === rightGuess[i]) {
-            rightGuess[letterPosition] = "$"
+            rightGuess = rightGuess.substring(0, i) + '$' + rightGuess.substring(i + 1);
         }
     }
     for (let i = 0; i < 5; i++) {
@@ -40,9 +39,8 @@ module.exports = function (msg, guessString, rightGuessString) {
             } else {
                 // shade box yellow
                 letterColor += ':yellow_square:'
+                rightGuess = rightGuess.substring(0, letterPosition) + '#' + rightGuess.substring(letterPosition + 1)
             }
-
-            rightGuess[letterPosition] = "#"
         }
     }
     msg.channel.send(letterBlock)
