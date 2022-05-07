@@ -3,7 +3,7 @@ const read = require("./read.js");
 module.exports = function (msg, guessString, rightGuessString) {
     const WORDS = read("./commands/words.json");
     let rightGuess = Array.from(rightGuessString)
-    let currentGuess = Array.from(guessString)
+    let currentGuess = Array.from(guessString.toLowerCase())
     if (guessString.length != 5) {
         msg.channel.send(guessString + " is not 5 letters long!")
         return "error"
@@ -17,9 +17,8 @@ module.exports = function (msg, guessString, rightGuessString) {
     let letterBlock = ''
     let letterColor = ''
     for (let i = 0; i < 5; i++) {
-        let letterPosition = rightGuess.indexOf(currentGuess[i])
         if (currentGuess[i] === rightGuess[i]) {
-            rightGuess[letterPosition] = "$"
+            rightGuess[i] = "$"
         }
     }
     for (let i = 0; i < 5; i++) {
@@ -40,9 +39,8 @@ module.exports = function (msg, guessString, rightGuessString) {
             } else {
                 // shade box yellow
                 letterColor += ':yellow_square:'
+                rightGuess[letterPosition] = "#"
             }
-
-            rightGuess[letterPosition] = "#"
         }
     }
     msg.channel.send(letterBlock)
