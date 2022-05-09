@@ -47,8 +47,12 @@ module.exports = function (msg, args) {
             }
 
             score.points = score.points + pointsDivided;
-            client.setScore.run(score);
             msg.channel.send("<@" + user + "> has won " + pointsDivided + " AkPoints!")
+            if (msg.author.id == user) {
+                msg.channel.send("<@" + user + "> has won an additional 250 AkPoints for guessing the correct word!")
+                score.points = score.points + 250;
+            }
+            client.setScore.run(score);
         });
         guessedUsers = []
     } else if (result === "wrong") {
