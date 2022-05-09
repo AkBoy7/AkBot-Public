@@ -3,7 +3,8 @@ const read = require("./read.js");
 module.exports = function (msg, guessString, rightGuessString) {
     const WORDS = read("./commands/words.json");
     let rightGuess = Array.from(rightGuessString)
-    let currentGuess = Array.from(guessString.toLowerCase())
+    guessString = guessString.toLowerCase()
+    let currentGuess = Array.from(guessString)
     if (guessString.length != 5) {
         msg.channel.send(guessString + " is not 5 letters long!")
         return "error"
