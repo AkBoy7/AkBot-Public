@@ -6,7 +6,7 @@ require('dotenv').config();
 
 module.exports = function (client) {
     setInterval(function () {
-        const WORDS = read("./commands/words.json");
+        const WORDS = read("./commands/wordleAnswers.json");
         let rightGuessString = [];
         rightGuessString.push(WORDS[Math.floor(Math.random() * WORDS.length)]);
         rightGuessString.push(NUMBER_OF_GUESSES)
