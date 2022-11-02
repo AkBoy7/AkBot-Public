@@ -7,6 +7,7 @@ require('dotenv').config();
 const Discord = require('discord.js');
 
 module.exports = async function (msg, args) {
+    const { EmbedBuilder } = require('discord.js');
     if (args.length == 0) {
         const client = msg.client;
         //get a list of bets formatted for the message
@@ -49,10 +50,10 @@ module.exports = async function (msg, args) {
         }
         userLeaderboardMsg = userLeaderboard.join(" \n");
 
-        const betEmbed = new Discord.MessageEmbed()
+        const betEmbed = new EmbedBuilder()
             .setColor('#D9D023')
             .setTitle('Current possible bets')
-            .setAuthor('AkBot', 'https://i.imgur.com/y21mVd6.png')
+            .setAuthor({name: 'AkBot', iconURL: 'https://i.imgur.com/y21mVd6.png'})
             .setDescription("You can bet by typing in the command !bet followed with the id of the bet, then the team/option written as 1 or 2. Finally, at the end of the command the amount of points. Example betting on a bet with an id on option 1 for 100 Akpoints: `!bet id 1 100` \nIf there are no bets, try make your own with `!bet create`")
             .setThumbnail('https://i.imgur.com/mXodbnH.png')
             .addFields(
@@ -63,7 +64,7 @@ module.exports = async function (msg, args) {
             )
             .setTimestamp()
         
-        msg.channel.send(betEmbed);
+        msg.channel.send({embeds: [betEmbed]});
         return;
     }
 
@@ -88,22 +89,17 @@ module.exports = async function (msg, args) {
         let complete = false;
         let betEntry;
         let authorID = msg.author.id;
-        console.log(authorID);
         let filter = m => m.author.id === msg.author.id;
 
-        const creationSetup1 = new Discord.MessageEmbed()
+        const creationSetup1 = new EmbedBuilder()
             .setColor('#D9D023')
             .setTitle("Bet Creation Step 1")
             .addFields(
                 { name: 'Type the name or title of the bet', value: 'you have 25 seconds until the bet creation will be canceled' },
             )
             .setTimestamp();
-        msg.channel.send(creationSetup1).then(() => {
-            msg.channel.awaitMessages(filter, {
-                max: 1,
-                time: 25000,
-                errors: ['time']
-            })
+        msg.channel.send({embeds: [creationSetup1]}).then(() => {
+            msg.channel.awaitMessages({ filter: filter, max: 1, time: 25000, errors: ['time']})
                 .then(async msg => {
                     msg = msg.first()
                     let title = msg.content
@@ -112,7 +108,7 @@ module.exports = async function (msg, args) {
                         return;
                     }
 
-                    const creationSetup2 = new Discord.MessageEmbed()
+                    const creationSetup2 = new EmbedBuilder()
                     .setColor('#D9D023')
                     .setTitle("Bet Creation Step 2")
                     .setDescription("Alright the name of your bet is: " + title)
@@ -120,14 +116,10 @@ module.exports = async function (msg, args) {
                         { name: 'What is the first option a user can bet on?', value: 'you have 25 seconds until the bet creation will be canceled' },
                     )
                     .setTimestamp();
-                    await msg.channel.send(creationSetup2)
+                    await msg.channel.send({embeds: [creationSetup2]})
                         .then(function (msg) {
                             msg.channel.send("Option 1:").then(() => {
-                                msg.channel.awaitMessages(filter, {
-                                    max: 1,
-                                    time: 25000,
-                                    errors: ['time']
-                                })
+                                msg.channel.awaitMessages({ filter: filter, max: 1, time: 25000, errors: ['time']})
                                     .then(async msg => {
                                         msg = msg.first()
                                         let option1 = msg.content
@@ -136,11 +128,7 @@ module.exports = async function (msg, args) {
                                             return;
                                         }
                                         await msg.channel.send("Option 2:").then(() => {
-                                            msg.channel.awaitMessages(filter, {
-                                                max: 1,
-                                                time: 25000,
-                                                errors: ['time']
-                                            })
+                                            msg.channel.awaitMessages({ filter: filter, max: 1, time: 25000, errors: ['time']})
                                                 .then(async msg => {
                                                     msg = msg.first()
                                                     let option2 = msg.content
@@ -149,7 +137,7 @@ module.exports = async function (msg, args) {
                                                         return;
                                                     }
 
-                                                    const creationSetup3 = new Discord.MessageEmbed()
+                                                    const creationSetup3 = new EmbedBuilder()
                                                     .setColor('#D9D023')
                                                     .setTitle("Bet Creation Step 3")
                                                     .setDescription("The two options of your bet are: " + option1 + " vs " + option2)
@@ -158,12 +146,8 @@ module.exports = async function (msg, args) {
                                                     )
                                                     .setTimestamp();
 
-                                                    await msg.channel.send(creationSetup3).then(() => {
-                                                        msg.channel.awaitMessages(filter, {
-                                                            max: 1,
-                                                            time: 25000,
-                                                            errors: ['time']
-                                                        })
+                                                    await msg.channel.send({embeds: [creationSetup3]}).then(() => {
+                                                        msg.channel.awaitMessages({ filter: filter, max: 1, time: 25000, errors: ['time']})
                                                             .then(async msg => {
                                                                 msg = msg.first()
                                                                 if (!(msg.content).includes("-") || (msg.content).includes(")")) {
@@ -178,7 +162,7 @@ module.exports = async function (msg, args) {
                                                                 odds[0] = parseFloat(odds[0]);
                                                                 odds[1] = parseFloat(odds[1]);
 
-                                                                const creationSetup4 = new Discord.MessageEmbed()
+                                                                const creationSetup4 = new EmbedBuilder()
                                                                 .setColor('#D9D023')
                                                                 .setTitle("Bet Creation Step 4")
                                                                 .setDescription("The odds are: " + odds[0] + " against " + odds[1])
@@ -186,12 +170,8 @@ module.exports = async function (msg, args) {
                                                                     { name: 'When should the bet be locked? Please use the following format: DD-MM-YYYY HH:MM', value: 'you have 25 seconds until the bet creation will be canceled' },
                                                                 )
                                                                 .setTimestamp();
-                                                                await msg.channel.send(creationSetup4).then(() => {
-                                                                    msg.channel.awaitMessages(filter, {
-                                                                        max: 1,
-                                                                        time: 25000,
-                                                                        errors: ['time']
-                                                                    })
+                                                                await msg.channel.send({embeds: [creationSetup4]}).then(() => {
+                                                                    msg.channel.awaitMessages({ filter: filter, max: 1, time: 25000, errors: ['time']})
                                                                         .then(async msg => {
                                                                             msg = msg.first()
                                                                             let timeDate = msg.content
@@ -287,7 +267,7 @@ function approveBet(msg, args) {
                 if (args[1].toLowerCase() === "approve") {
                     bet.approved = 1;
                     client.setBet.run(bet);
-                    msg.channel.send("Bet approved!");
+                    msg.channel.send("Bet approved! Please do not remove the bet since that would remove the points of users, cancel the bet after lockin");
                     const nameID = bet.author;
                     client.users.fetch(nameID).then(user => {
                         user.send(`Your bet: ${bet.title} was approved by ${msg.author.username}`);

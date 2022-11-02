@@ -25,8 +25,13 @@ module.exports = async function (msg, args) {
             text += "<@" + participants[i] + ">\n";
         }
         text += "";
-
-        const usersEmbed = new Discord.MessageEmbed()
+        
+        if (participants.length == 0) {
+            console.log("here");
+            text = "No one";
+        }
+        const { EmbedBuilder } = require('discord.js');
+        const usersEmbed = new EmbedBuilder()
         .setColor('#D9D023')
         .setTitle('Current users claiming AkPoints for the event')
         .setDescription(text)
@@ -34,12 +39,8 @@ module.exports = async function (msg, args) {
         if (args[0].toLowerCase() === "accept") {
             let filter = m => m.author.id === msg.author.id;
             msg.channel.send("Please confirm the current people that have claimed AkPoints with `YES` or `NO`.")
-            msg.channel.send(usersEmbed).then(() => {
-                msg.channel.awaitMessages(filter, {
-                    max: 1,
-                    time: 15000,
-                    errors: ['time']
-                })
+            msg.channel.send({embeds: [usersEmbed]}).then(() => {
+                msg.channel.awaitMessages({ filter: filter, max: 1, time: 15000, errors: ['time']})
                     .then(async msg => {
                         msg = msg.first()
                         let command = msg.content.toUpperCase();
@@ -114,11 +115,7 @@ module.exports = async function (msg, args) {
 
     let filter = m => m.author.id === msg.author.id;
     msg.channel.send("What is the name of the event in which users can claim free AkPoints for?").then(() => {
-        msg.channel.awaitMessages(filter, {
-            max: 1,
-            time: 20000,
-            errors: ['time']
-        })
+        msg.channel.awaitMessages({ filter: filter, max: 1, time: 20000, errors: ['time']})
             .then(async msg => {
                 msg = msg.first()
                 let eventName = msg.content
@@ -127,7 +124,7 @@ module.exports = async function (msg, args) {
                     return;
                 }
 
-                await msg.channel.send("React to this message with 👍 to claim your AkPoints for participating in `" + eventName + "`. You will receive your free AkPoints at the end of the event.")
+                await msg.channel.send("<@&899285064226050108> React to this message with 👍 to claim your AkPoints for participating in `" + eventName + "`. You will receive your free AkPoints at the end of the event.")
                     .then( function (msg) {
                         msg.react("👍")
                         msgID.push(msg.id)

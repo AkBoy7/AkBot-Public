@@ -1,10 +1,11 @@
 const Discord = require('discord.js');
 
 module.exports = function (msg, args) {
-    const helpEmbed = new Discord.MessageEmbed()
+    const { EmbedBuilder } = require('discord.js');
+    const helpEmbed = new EmbedBuilder()
         .setColor('#D9D023')
         .setTitle('Akbot Commands')
-        .setAuthor('AkBot', 'https://i.imgur.com/y21mVd6.png')
+        .setAuthor({name: 'AkBot', iconURL: 'https://i.imgur.com/y21mVd6.png'})
         .setDescription('Made by Akam\nIf you experience any issues with this bot please contact AkBob')
         .setThumbnail('https://i.imgur.com/mXodbnH.png')
         .addFields(
@@ -18,5 +19,5 @@ module.exports = function (msg, args) {
         )
         .setTimestamp();
 
-    msg.channel.send(helpEmbed);
+    msg.channel.send({embeds: [helpEmbed]});
 };

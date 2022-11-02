@@ -9,48 +9,24 @@ var badwordsArray = read("./badwordslist.json");
 var ignoreList = read("./ignore.json");
 const checkRole = require("./commands/methods/checkRole.js");
 
-const AntiSpam = require('discord-anti-spam');
-const antiSpam = new AntiSpam({
-    warnThreshold: 3, // Amount of messages sent in a row that will cause a warning.
-    kickThreshold: 5, // Amount of messages sent in a row that will cause a kick.
-    banThreshold: 70, // Amount of messages sent in a row that will cause a ban.
-    muteThreshold: 50, // Amount of messages sent in a row that will cause a mute.
-    maxInterval: 4000, // Amount of time (in milliseconds) in which messages are considered spam.
-    warnMessage: '{@user}, Please stop spamming with AkBot otherwise you would be added to the ignore list.', // Message that will be sent in chat upon warning a user.
-    kickMessage: '{@user} has been added to the ignore list for spamming with AkBot.', // Message that will be sent in chat upon kicking a user.
-    banMessage: '**{user_tag}** has been banned for spamming.', // Message that will be sent in chat upon banning a user.
-    muteMessage: '**{user_tag}** has been muted for spamming.', // Message that will be sent in chat upon muting a user.
-    maxDuplicatesWarning: 7, // Amount of duplicate messages that trigger a warning.
-    maxDuplicatesKick: 10, // Amount of duplicate messages that trigger a warning.
-    maxDuplicatesBan: 12, // Amount of duplicate messages that trigger a warning.
-    maxDuplicatesMute: 9, // Amount of duplicate messages that trigger a warning.
-    // Discord permission flags: https://discord.js.org/#/docs/main/master/class/Permissions?scrollTo=s-FLAGS
-    exemptPermissions: ['ADMINISTRATOR'], // Bypass users with any of these permissions(These are not roles so use the flags from link above).
-    ignoreBots: true, // Ignore bot messages.
-    verbose: true, // Extended Logs from module.
-    ignoredUsers: ignoreList, // Array of User IDs that get ignored.
-});
-
-
 //all the commands AkBot currently supports
 const ak = require("./commands/ak.js");
 const help = require("./commands/ak.js");
 const gif = require("./commands/gif.js");
-const akpic = require("./commands/akpic.js");
+//const akpic = require("./commands/akpic.js");
 const detect = require("./commands/detect.js");
 const ignore = require("./commands/ignore.js");
 const points = require("./commands/points.js");
 const dm = require("./commands/dm.js");
-const OLDbet = require("./commands/bet.js");
 const bids = require("./commands/bids.js");
 const coinflip = require("./commands/coinflip.js");
 const app = require("./commands/app.js");
 const remindMe = require("./commands/remindMe.js");
-const music = require("./commands/music.js");
+//const music = require("./commands/music.js");
 const event = require("./commands/event.js");
 const bet = require("./commands/newbet.js");
 const wordle = require("./commands/wordleGuess.js")
-const commands = { ak, help, gif, akpic, detect, ignore, points, dm, bet, bids, coinflip, app, remindMe, music, event, wordle};
+const commands = { ak, help, gif, detect, ignore, points, dm, bet, bids, coinflip, app, remindMe, event, wordle};
 
 module.exports = async function (msg) {
     const client = msg.client;
@@ -60,6 +36,7 @@ module.exports = async function (msg) {
         return;
     }
 
+    //Deletes pins created message when a message of Akbot is pinned
     if(msg.type === "PINS_ADD" && msg.author.bot) {
         msg.delete();
     }
@@ -83,28 +60,16 @@ module.exports = async function (msg) {
             commands[command](msg, tokens);
         }
 
-        //Spam detection if user was warned and continues spamming he will be ignored
-        tokens = msg.content.split(' ');
-        command = tokens.shift();
-        if (command.charAt(0) === `${BOT_PREFIX}`) {
-            antiSpam.message(msg);
-            if ((antiSpam.data.kickedUsers).includes(msg.author.id)) {
-                if (!ignoreList.includes(msg.author.username)) {
-                    ignoreList.push(msg.author.username);
-                    write(ignoreList, "./ignore.json");
-                    msg.channel.send(msg.author.toString() + " has been added to the ignore list for spamming.");
-                }
-            }
-        }
-
-        //update the lists for any possible changes
-        badwordsArray = read("./badwordslist.json");
+        //update the list for any possible changes
         ignoreList = read("./ignore.json");
     }
+
+    //update the list for any possible changes
+    badwordsArray = read("./badwordslist.json");
     
     //offensive word detection
     let tokens = msg.content.split(' ');
-    if ((checkRole("Board", msg) || checkRole("Moderator", msg))) {
+    if (!(checkRole("Board", msg) || checkRole("Moderator", msg)) && !msg.author.bot) {
         var msgContainsBadWord = false;
         tokens.forEach(word => {
             if (badMessage(word)) {
