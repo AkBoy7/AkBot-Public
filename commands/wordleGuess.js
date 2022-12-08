@@ -34,7 +34,30 @@ module.exports = function (msg, args) {
         msg.channel.send("Today's wordle is already done!")
         return
     }
+
+    let userguess = client.getScore.get(msg.author.id);
+    // Creates new table if user does not have one yet
+    if (!userguess) {
+        msg.channel.send("You have no more Wordle tokens to use to guess this Wordle! Try `!points get` to get more tokens.")
+        return;
+    }
+    if (userguess.tokens == 0) {
+        msg.channel.send("You have no more Wordle tokens to use to guess this Wordle! Try `!points get` to get more tokens.")
+        return;
+    } else {
+        userguess.tokens = userguess.tokens - 1;
+        if (userguess.tokens < 0) {
+            msg.channel.send("Something unexpected happened?? message AkBob please!");
+            return;
+        }
+        client.setScore.run(userguess);
+    }
+
+    
     let result = checkGuess(msg, args[0], correctString)
+    let userData = client.getData.get(msg.author.id);
+    userData.wordleGuesses += 1;
+
     if (result === "correct") {
         state = "guessed"
         guessedUsers.push(msg.author.id)
@@ -53,6 +76,8 @@ module.exports = function (msg, args) {
                 score.points = score.points + 250;
             }
             client.setScore.run(score);
+
+            userData.wordleCorrectGuess += 1;
         });
         guessedUsers = []
     } else if (result === "wrong") {
@@ -66,6 +91,7 @@ module.exports = function (msg, args) {
             guessedUsers.push(msg.author.id)
         }
     }
+    client.setData.run(userData);
 
     let newWords = [correctString, amountOfGuesses, state]
     write(newWords, "./commands/correctWord.json")

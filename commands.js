@@ -8,6 +8,7 @@ const read = require("./commands/methods/read.js");
 var badwordsArray = read("./badwordslist.json");
 var ignoreList = read("./ignore.json");
 const checkRole = require("./commands/methods/checkRole.js");
+const generateUserData = require('./commands/methods/generateUserData.js');
 
 //all the commands AkBot currently supports
 const ak = require("./commands/ak.js");
@@ -18,7 +19,7 @@ const detect = require("./commands/detect.js");
 const ignore = require("./commands/ignore.js");
 const points = require("./commands/points.js");
 const dm = require("./commands/dm.js");
-const bids = require("./commands/bids.js");
+//const bids = require("./commands/bids.js");
 const coinflip = require("./commands/coinflip.js");
 const app = require("./commands/app.js");
 const remindMe = require("./commands/remindMe.js");
@@ -26,10 +27,20 @@ const remindMe = require("./commands/remindMe.js");
 const event = require("./commands/event.js");
 const bet = require("./commands/newbet.js");
 const wordle = require("./commands/wordleGuess.js")
-const commands = { ak, help, gif, detect, ignore, points, dm, bet, bids, coinflip, app, remindMe, event, wordle};
+const commands = { ak, help, gif, detect, ignore, points, dm, bet, coinflip, app, remindMe, event, wordle};
 
 module.exports = async function (msg) {
     const client = msg.client;
+    let userData = client.getData.get(msg.author.id);
+    //creates mew table if user does not have one yet
+    if (!userData) {
+        userData = generateUserData(msg);
+        client.setData.run(userData);
+        console.log("New User Data created for " + msg.author.username)
+    }
+
+    userData.chatMessageCount += 1;
+    client.setData.run(userData);
 
     //for testing in specific channel
     if (msg.channel.id != process.env.TEST_CHANNELID) {
@@ -57,7 +68,11 @@ module.exports = async function (msg) {
         let command = tokens.shift();
         if (command.charAt(0) === `${BOT_PREFIX}`) {
             command = command.substring(1);
-            commands[command](msg, tokens);
+            try {
+                commands[command](msg, tokens);
+            } catch (error) {
+                console.log(error);
+            }
         }
 
         //update the list for any possible changes

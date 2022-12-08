@@ -5,6 +5,7 @@ module.exports = function (msg) {
         points: 0,
         bids: "",
         amount: "",
-        cooldown: 0
+        cooldown: 0,
+        tokens: 2
     }
 };

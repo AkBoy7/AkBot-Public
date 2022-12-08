@@ -4,6 +4,7 @@ const humanizeDuration = require('humanize-duration');
 const generateScore = require('./methods/generateScore');
 
 const freePoints = 300;
+const MAX_TOKENS = 2;
 
 const checkRole = require("./methods/checkRole.js");
 const read = require('./methods/read');
@@ -47,9 +48,10 @@ module.exports = async function (msg, args) {
             }
             score.points += freePoints;
             score.cooldown = Date.now();
+            score.tokens = MAX_TOKENS;
             client.setScore.run(score);
             const remaining = humanizeDuration(cooldown - (Date.now() - score.cooldown), { delimiter: " and ", round: true, units: ["d", "h", "m"] });
-            msg.reply("You have gained " + freePoints + ` AkPoints and currently you have ${score.points} AkPoints! You can use this command again after ${remaining}`);
+            msg.reply("You have gained " + freePoints + ` AkPoints and `  + MAX_TOKENS + ` Wordle tokens! You can only have up to `  + MAX_TOKENS + ` tokens at once.\nCurrently you have ${score.points} AkPoints! You can use this command again after ${remaining}`);
         }
     } else if (checkRole("Board", msg) || checkRole("Moderator", msg)) {
         //Moderator specific messages
@@ -66,7 +68,8 @@ module.exports = async function (msg, args) {
                     points: 0,
                     bids: "",
                     amount: "",
-                    cooldown: 0
+                    cooldown: 0,
+                    tokens: MAX_TOKENS
                 }
             }
 

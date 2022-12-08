@@ -40,6 +40,7 @@ function readyDiscord() {
     client.user.setActivity("Zephyr", {type: 'PLAYING'});
     setupSQL();
     setupSQLBets();
+    setupSQLDataCollection();
     reminder(client);
     lockin(client);
     wordleGenerator(client);
@@ -60,7 +61,7 @@ function setupSQL() {
     const table = sql.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'akbotData';").get();
     if (!table['count(*)']) {
         // If the table isn't there, create it and setup the database correctly.
-        sql.prepare("CREATE TABLE akbotData (id TEXT PRIMARY KEY, user TEXT, points INTEGER, bids TEXT, amount TEXT, cooldown INTEGER);").run();
+        sql.prepare("CREATE TABLE akbotData (id TEXT PRIMARY KEY, user TEXT, points INTEGER, bids TEXT, amount TEXT, cooldown INTEGER, tokens INTEGER);").run();
         // Ensure that the "id" row is always unique and indexed.
         sql.prepare("CREATE UNIQUE INDEX idx_scores_id ON akbotData (id);").run();
         sql.pragma("synchronous = 1");
@@ -69,7 +70,7 @@ function setupSQL() {
 
     // And then we have two prepared statements to get and set the score data.
     client.getScore = sql.prepare("SELECT * FROM akbotData WHERE user = ?");
-    client.setScore = sql.prepare("INSERT OR REPLACE INTO akbotData (id, user, points, bids, amount, cooldown) VALUES (@id, @user, @points, @bids, @amount, @cooldown);");
+    client.setScore = sql.prepare("INSERT OR REPLACE INTO akbotData (id, user, points, bids, amount, cooldown, tokens) VALUES (@id, @user, @points, @bids, @amount, @cooldown, @tokens);");
     client.getUsersBids = sql.prepare("SELECT * FROM akbotData WHERE bids != ?");
     client.getUsers = sql.prepare("SELECT * FROM akbotData");
 }
@@ -90,4 +91,21 @@ function setupSQLBets() {
     client.getBets = sql.prepare("SELECT * FROM betData");
     client.remBet = sql.prepare("DELETE FROM betData WHERE id = ?");
     client.setBet = sql.prepare("INSERT OR REPLACE INTO betData (id, author, title, option1, option2, odds1, odds2, lockin, locked, approved, userBets1, amount1, userBets2, amount2) VALUES (@id, @author, @title, @option1, @option2, @odds1, @odds2, @lockin, @locked, @approved, @userBets1, @amount1, @userBets2, @amount2);");
+}
+
+function setupSQLDataCollection() {
+    // Check if the table "points" exists.
+    const table = sql.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'userData';").get();
+    if (!table['count(*)']) {
+        // If the table isn't there, create it and setup the database correctly.
+        sql.prepare("CREATE TABLE userData (id TEXT PRIMARY KEY, user TEXT, wordleGuesses INTEGER, wordleCorrectGuess INTEGER, betsLost INTEGER, betsWon INTEGER, chatMessageCount INTEGER, eventsJoined INTEGER);").run();
+        // Ensure that the "id" row is always unique and indexed.
+        sql.prepare("CREATE UNIQUE INDEX idx_scores_id ON userData (id);").run();
+        sql.pragma("synchronous = 1");
+        sql.pragma("journal_mode = wal");
+    }
+
+    // And then we have two prepared statements to get and set the score data.
+    client.getData = sql.prepare("SELECT * FROM userData WHERE id = ?");
+    client.setData = sql.prepare("INSERT OR REPLACE INTO userData (id, user, wordleGuesses, wordleCorrectGuess, betsLost, betsWon, chatMessageCount, eventsJoined) VALUES (@id, @user, @wordleGuesses, @wordleCorrectGuess, @betsLost, @betsWon, @chatMessageCount, @eventsJoined);");
 }

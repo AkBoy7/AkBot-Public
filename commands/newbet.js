@@ -415,11 +415,17 @@ function applyResults(msg, args) {
                 userEntry.points += pointsGained;
                 client.setScore.run(userEntry);
                 msg.channel.send("<@" + winnersIDs[i] + "> has bet correctly and won " + pointsGained + " AkPoints.");
+                let userData = client.getData.get(winnersIDs[i]);
+                userData.betsWon += 1;
+                client.setData.run(userData);
             }
 
             for (let i = 0; i < losersIDs.length -1; i++) {
                 let pointslossed = parseInt(losersAmount[i], 10);
                 msg.channel.send("<@" + losersIDs[i] + "> has lost the bet and lost " + pointslossed + " AkPoints.");
+                let userData = client.getData.get(losersIDs[i]);
+                userData.betsLost += 1;
+                client.setData.run(userData);
             }
 
             client.remBet.run(currentBet.id);
@@ -435,11 +441,17 @@ function applyResults(msg, args) {
                 userEntry.points += pointsGained;
                 client.setScore.run(userEntry);
                 msg.channel.send("<@" + winnersIDs[i] + "> has bet correctly and won " + pointsGained + " AkPoints.");
+                let userData = client.getData.get(winnersIDs[i]);
+                userData.betsWon += 1;
+                client.setData.run(userData);
             }
 
             for (let i = 0; i < losersIDs.length-1; i++) {
                 let pointslossed = parseInt(losersAmount[i], 10);
                 msg.channel.send("<@" + losersIDs[i] + "> has lost the bet and lost " + pointslossed + " AkPoints.");
+                let userData = client.getData.get(losersIDs[i]);
+                userData.betsLost += 1;
+                client.setData.run(userData);
             }
 
             client.remBet.run(currentBet.id);

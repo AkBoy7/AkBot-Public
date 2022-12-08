@@ -3,6 +3,8 @@ const write = require("./methods/write.js");
 const read = require("./methods/read.js");
 const Discord = require('discord.js');
 const freeEventPoints = 900;
+const generateUserData = require('./methods/generateUserData.js');
+const generateScore = require("./methods/generateScore.js");
 
 //!event add name Of Event -> start a pol for an event
 //!event accept -> give all of the users who reacted 800 AkPoints and removes last event.
@@ -52,18 +54,25 @@ module.exports = async function (msg, args) {
                                 console.log(userScore);
                                 if (!userScore) {
                                     userScore = {
-                                        id: `${particpant}`,
-                                        user: particpant,
-                                        points: 0,
-                                        bids: "",
-                                        amount: "",
-                                        cooldown: 0
+                                    id: `${particpant}`,
+                                    user: particpant,
+                                    points: 0,
+                                    bids: "",
+                                    amount: "",
+                                    cooldown: 0,
+                                    tokens: 2
                                     }
                                 }
-
+                                let userData = client.getData.get(particpant);
+                                if (!userData) {
+                                    userData = generateUserData(participant);
+                                    console.log("New User Data created (event) for " + msg.author.username);
+                                }
                                 userScore.points += freeEventPoints;
                                 client.setScore.run(userScore);
                                 msg.channel.send("Thank you for joining the Zephyr event <@" + particpant + ">, here are your free `" + freeEventPoints + "` AkPoints. Your total is now: `" + userScore.points + "`");
+                                userData.eventsJoined += 1;
+                                client.setData.run(userData);
                             });
 
                             msgID = [];
@@ -86,7 +95,9 @@ module.exports = async function (msg, args) {
                 return;
             }
 
-            let nameID = args[1].substring(3, args[1].length - 1);
+            const mentioneduser = msg.mentions.users.first();
+            const nameID = mentioneduser.id
+            //let nameID = args[1].substring(3, args[1].length - 1);
             const index = participants.indexOf(nameID);
             if (index > -1) {
                 participants.splice(index, 1);
