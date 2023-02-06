@@ -8,7 +8,7 @@ const TOTALPOINTSWIN = 2500
 module.exports = function (msg, args) {
     if (args.length == 0) {
         msg.channel.send("This is a beta version of Akbot Wordle. How does this work?\n" +
-        "Everyday there is a new 5 letter word generated, users can guess the word with the command `!wordle guess`\n" +
+        "Every 12-24 hours there is a new 5 letter word generated, users can guess the word with the command `!wordle guess`\n" +
         "I will then send red squares for letters which are not in the word, yellow for letters that are in the word but in a different position,"+
         "and green squares for letters that are in the word and are in the correct position\n" +
         "You only have one guess each and you have to work together to find the words, onces the word is guessed the points will be shared to all of the users who have guessed.")
