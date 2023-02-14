@@ -41,6 +41,7 @@ function readyDiscord() {
     setupSQL();
     setupSQLBets();
     setupSQLDataCollection();
+    setupSQLReqSchedule();
     reminder(client);
     lockin(client);
     wordleGenerator(client);
@@ -108,4 +109,23 @@ function setupSQLDataCollection() {
     // And then we have two prepared statements to get and set the score data.
     client.getData = sql.prepare("SELECT * FROM userData WHERE id = ?");
     client.setData = sql.prepare("INSERT OR REPLACE INTO userData (id, user, wordleGuesses, wordleCorrectGuess, betsLost, betsWon, chatMessageCount, eventsJoined) VALUES (@id, @user, @wordleGuesses, @wordleCorrectGuess, @betsLost, @betsWon, @chatMessageCount, @eventsJoined);");
+}
+
+// Initialize function and sql database for pc request schedule
+function setupSQLReqSchedule() {
+    // Check if the table "points" exists.
+    const table = sql.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'scheduleData';").get();
+    if (!table['count(*)']) {
+        // If the table isn't there, create it and setup the database correctly.
+        sql.prepare("CREATE TABLE scheduleData (id INTEGER PRIMARY KEY, trainingDate TEXT, slot1 TEXT, slot2 TEXT);").run();
+        // Ensure that the "id" row is always unique and indexed.
+        sql.prepare("CREATE UNIQUE INDEX idx_bet_id ON scheduleData (id);").run();
+        sql.pragma("synchronous = 1");
+        sql.pragma("journal_mode = wal");
+    }
+
+    // And then we have two prepared statements to get and set the score data.
+    client.getSchedule = sql.prepare("SELECT * FROM scheduleData");
+    client.remTrainingDay = sql.prepare("DELETE FROM scheduleData WHERE trainingDate = ?");
+    client.setScheduleSlot = sql.prepare("INSERT OR REPLACE INTO scheduleData (id, trainingDate, slot1, slot2) VALUES (@id, @trainingDate, @slot1, @slot2);");
 }

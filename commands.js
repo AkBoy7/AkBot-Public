@@ -27,7 +27,8 @@ const remindMe = require("./commands/remindMe.js");
 const event = require("./commands/event.js");
 const bet = require("./commands/newbet.js");
 const wordle = require("./commands/wordleGuess.js")
-const commands = { ak, help, gif, detect, ignore, points, dm, bet, coinflip, app, remindMe, event, wordle};
+const initSchedule = require("./commands/initSchedule.js")
+const commands = { ak, help, gif, detect, ignore, points, dm, bet, coinflip, app, remindMe, event, wordle, initSchedule };
 
 module.exports = async function (msg) {
     const client = msg.client;
