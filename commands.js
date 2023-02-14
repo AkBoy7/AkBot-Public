@@ -42,10 +42,10 @@ module.exports = async function (msg) {
     userData.chatMessageCount += 1;
     client.setData.run(userData);
 
-    //for testing in specific channel
-    // if (msg.channel.id != process.env.TEST_CHANNELID) {
-    //     return;
-    // }
+    // for testing in specific channel
+    if (msg.channel.id != process.env.TEST_CHANNELID) {
+        return;
+    }
 
     //Deletes pins created message when a message of Akbot is pinned
     if(msg.type === "PINS_ADD" && msg.author.bot) {
