@@ -14,19 +14,19 @@ module.exports = function (msg, args) {
     // Command: !pc 
     // This will send a help menu
     if (args.length == 0) {
-
+        // TODO: write a list of commands in an embedded message
     }
 
     // Command: !pc help 
     // This will also send a help menu
     if (args.length == 1 && args[0].toLowerCase() === "help") {
-
+        // TODO: write a list of commands in an embedded message
     }
 
     // Command: !pc schedule 
     // This will send a schedule of this month and next month
     if (args.length == 1 && args[0].toLowerCase() === "schedule") {
-
+        // TODO: send a schedule of the current and next month in an embedded message
     }
 
     // Command: !pc request DD-MM 
@@ -70,17 +70,17 @@ module.exports = function (msg, args) {
 
 // Reserve the slot stored inside the dateObj and consumes a token
 function reserveSlot(msg) {
-
+    // TODO: write function
 }
 
 // Cancel the reserved slot stored inside the dateObj and returns the token to the owner
 function cancelSlot(msg) {
-
+    // TODO: write function
 }
 
 // Removes any reservation inside the dateObj, returns any tokens and removes the date from the schedule
 function removeSlot(msg) {
-
+    // TODO: write function
 }
 
 // Checks if date is actually in a date format of DD-MM and return false if not correct
@@ -101,6 +101,8 @@ function checkDateFormat(date) {
         msg.channel.send("An unexpected error occured with processing the date.");
         return false;
     }
+
+    // TODO: check if requested date is a training day
 
     return true;
 }
