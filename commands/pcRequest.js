@@ -33,7 +33,7 @@ module.exports = function (msg, args) {
         var now = new Date();
         allDates.forEach(entry => {
             const dateObject = new Date(entry.trainingDate);
-            if (now.getMonth() >= dateObject.getMonth() && now.getMonth() + 2 < dateObject.getMonth()) {
+            if (now.getMonth() >= dateObject.getMonth() && now.getMonth() + 1 <= dateObject.getMonth()) {
                 const humanDate = dateObject.toLocaleString();
                 let slot1;
                 let slot2;
