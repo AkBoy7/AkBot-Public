@@ -14,6 +14,7 @@ module.exports = function (msg, args) {
             return;
         } else if (args[0].toLowerCase() === "force") {
             msg.channel.send("Forced generating new Schedule...");
+            //msg.client.removeSchedule.run();
         }
     } else {
         msg.channel.send("Generating new Schedule...");
@@ -22,7 +23,7 @@ module.exports = function (msg, args) {
     let slot1 = ""
     let slot2 = ""
 
-    var d = new Date(),
+    var d = new Date();
     year = d.getYear(),
     trainingDates = [];
     console.log(year);
@@ -33,10 +34,14 @@ module.exports = function (msg, args) {
         d.setDate(d.getDate() + 1);
     }
 
+    // Set time to 23:59:59
+    d.setHours(23, 59, 59);
+
+
     // Get all the other Mondays and Wednesday in the current year
     while (d.getYear() === year) {
         var pushDate = new Date(d.getTime());
-        trainingDates.push(pushDate.getDate() + '-' + (pushDate.getMonth()+1) + '-' + pushDate.getFullYear());
+        trainingDates.push(pushDate);
 
         // if monday go to wednesday, else go from wednesday to monday
         if (d.getDay() == 1) {
@@ -50,7 +55,7 @@ module.exports = function (msg, args) {
     for (let i = 0; i < trainingDates.length; i++) {
         entry = {
             id: i,
-            trainingDate: trainingDates[i],
+            trainingDate: trainingDates[i].getTime(),
             slot1: slot1,
             slot2: slot2
         };

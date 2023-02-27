@@ -117,7 +117,7 @@ function setupSQLReqSchedule() {
     const table = sql.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'scheduleData';").get();
     if (!table['count(*)']) {
         // If the table isn't there, create it and setup the database correctly.
-        sql.prepare("CREATE TABLE scheduleData (id INTEGER PRIMARY KEY, trainingDate TEXT, slot1 TEXT, slot2 TEXT);").run();
+        sql.prepare("CREATE TABLE scheduleData (id INTEGER PRIMARY KEY, trainingDate TIMESTAMP, slot1 TEXT, slot2 TEXT);").run();
         // Ensure that the "id" row is always unique and indexed.
         sql.prepare("CREATE UNIQUE INDEX idx_bet_id ON scheduleData (id);").run();
         sql.pragma("synchronous = 1");
@@ -128,4 +128,5 @@ function setupSQLReqSchedule() {
     client.getSchedule = sql.prepare("SELECT * FROM scheduleData");
     client.remTrainingDay = sql.prepare("DELETE FROM scheduleData WHERE trainingDate = ?");
     client.setScheduleSlot = sql.prepare("INSERT OR REPLACE INTO scheduleData (id, trainingDate, slot1, slot2) VALUES (@id, @trainingDate, @slot1, @slot2);");
+    client.removeSchedule = sql.prepare("DROP TABLE scheduleData");
 }
