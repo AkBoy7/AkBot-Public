@@ -6,6 +6,7 @@ const path = require('node:path');
 const reminder = require('./commands/remind.js');
 const lockin = require('./commands/checkLockin.js');
 const wordleGenerator = require('./commands/wordleGenerator.js');
+const tokenManager = require('./commands/tokenManager.js');
 
 // const Discord = require('discord.js');
 const { Client, Events, Partials, Intents, Collection, GatewayIntentBits } = require('discord.js');
@@ -42,9 +43,11 @@ function readyDiscord() {
     setupSQLBets();
     setupSQLDataCollection();
     setupSQLReqSchedule();
+    setupSQLTokenData();
     reminder(client);
     lockin(client);
     wordleGenerator(client);
+    tokenManager(client);
     console.log('---init succesfull, bot is online---');
 }
 
@@ -129,4 +132,22 @@ function setupSQLReqSchedule() {
     client.remTrainingDay = sql.prepare("DELETE FROM scheduleData WHERE trainingDate = ?");
     client.setScheduleSlot = sql.prepare("INSERT OR REPLACE INTO scheduleData (id, trainingDate, slot1, slot2) VALUES (@id, @trainingDate, @slot1, @slot2);");
     client.removeSchedule = sql.prepare("DROP TABLE scheduleData");
+}
+
+// Initialize function and sql database for tokens for team captains
+function setupSQLTokenData() {
+    // Check if the table "points" exists.
+    const table = sql.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'tokenData';").get();
+    if (!table['count(*)']) {
+        // If the table isn't there, create it and setup the database correctly.
+        sql.prepare("CREATE TABLE tokenData (id INTEGER PRIMARY KEY, captain TEXT, tokens INTEGER);").run();
+        // Ensure that the "id" row is always unique and indexed.
+        sql.prepare("CREATE UNIQUE INDEX idx_bet_id ON tokenData (id);").run();
+        sql.pragma("synchronous = 1");
+        sql.pragma("journal_mode = wal");
+    }
+
+    // And then we have two prepared statements to get and set the score data.
+    client.getTokenData = sql.prepare("SELECT * FROM tokenData");
+    client.setToken = sql.prepare("INSERT OR REPLACE INTO tokenData (id, captain, tokens) VALUES (@id, @captain, @tokens);");
 }
