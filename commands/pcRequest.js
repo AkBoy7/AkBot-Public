@@ -261,8 +261,8 @@ function helpDescription(msg, EmbedBuilder) {
         { name: '\u200B', value: '\u200B' },
     )
     .addFields(
-        { name: 'Mod commands', value: '!pc remove DD-MM\n', inline: true },
-        { name: 'Description', value: 'Remove the date from the schedule and cancels any reservations on that date\n', inline: true },
+        { name: 'Mod commands', value: '!pc cancel DD-MM slotnumber\n\n\n\n!pc remove DD-MM\n', inline: true },
+        { name: 'Description', value: 'Cancel any reservation of the specified slot number on that date.\n\nRemove the date from the schedule and cancels any reservations on that date\n', inline: true },
     )
     .setTimestamp();
 
