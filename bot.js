@@ -120,9 +120,9 @@ function setupSQLReqSchedule() {
     const table = sql.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'scheduleData';").get();
     if (!table['count(*)']) {
         // If the table isn't there, create it and setup the database correctly.
-        sql.prepare("CREATE TABLE scheduleData (id INTEGER PRIMARY KEY, trainingDate TIMESTAMP, slot1 TEXT, slot2 TEXT);").run();
+        sql.prepare("CREATE TABLE scheduleData (trainingDate TIMESTAMP PRIMARY KEY, slot1 TEXT, slot2 TEXT);").run();
         // Ensure that the "id" row is always unique and indexed.
-        sql.prepare("CREATE UNIQUE INDEX idx_bet_id ON scheduleData (id);").run();
+        sql.prepare("CREATE UNIQUE INDEX idx_bet_id ON scheduleData (trainingDate);").run();
         sql.pragma("synchronous = 1");
         sql.pragma("journal_mode = wal");
     }
@@ -130,7 +130,7 @@ function setupSQLReqSchedule() {
     // And then we have two prepared statements to get and set the score data.
     client.getSchedule = sql.prepare("SELECT * FROM scheduleData");
     client.remTrainingDay = sql.prepare("DELETE FROM scheduleData WHERE trainingDate = ?");
-    client.setScheduleSlot = sql.prepare("INSERT OR REPLACE INTO scheduleData (id, trainingDate, slot1, slot2) VALUES (@id, @trainingDate, @slot1, @slot2);");
+    client.setScheduleSlot = sql.prepare("INSERT OR REPLACE INTO scheduleData (trainingDate, slot1, slot2) VALUES (@trainingDate, @slot1, @slot2);");
     client.removeSchedule = sql.prepare("DROP TABLE scheduleData");
 }
 
@@ -150,4 +150,5 @@ function setupSQLTokenData() {
     // And then we have two prepared statements to get and set the score data.
     client.getTokenData = sql.prepare("SELECT * FROM tokenData");
     client.setToken = sql.prepare("INSERT OR REPLACE INTO tokenData (id, captain, tokens) VALUES (@id, @captain, @tokens);");
+    client.getUserToken = sql.prepare("SELECT * FROM tokenData WHERE id = ?");
 }

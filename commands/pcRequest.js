@@ -3,11 +3,13 @@ require('dotenv').config();
 let dateObj;
 let client;
 const Discord = require('discord.js');
+let requestedEntryDate;
+const MAX_TOKENS = 2; // This should be the same as in tokenManager.js
 
 // Main method that is called after !pc
 module.exports = function (msg, args) {
     const { EmbedBuilder } = require('discord.js');
-    // only allowed to be used in #pcrequest channel
+    // Only allowed to be used in #pcrequest channel
     // if (msg.channel.id != process.env.PC_REQUEST_CHANNEL_ID) {
     //     msg.channel.send("Wrong text channel, please use the pcrequest channel.\n" +
     //     "If you do not have acces to this channel then message the board or a moderator.");
@@ -34,6 +36,11 @@ module.exports = function (msg, args) {
     if (args.length == 1 && args[0].toLowerCase() === "schedule") {
         let formattedSchedule = [];
         let allDates = client.getSchedule.all();
+
+        allDates.sort(function(a, b) {
+            return ((a.trainingDate < b.trainingDate) ? -1 : ((a.trainingDate == b.trainingDate) ? 0 : 1));
+        });
+
         var now = new Date();
         allDates.forEach(entry => {
             const dateObject = new Date(entry.trainingDate);
@@ -44,13 +51,15 @@ module.exports = function (msg, args) {
                 if (entry.slot1 === "") {
                     slot1 = "---";
                 } else {
-                    slot1 = entry.slot1;
+                    let user = client.users.cache.get(entry.slot1);
+                    slot1 = user.username;
                 }
     
                 if (entry.slot2 === "") {
                     slot2 = "---";
                 } else {
-                    slot2 = entry.slot2;
+                    let user = client.users.cache.get(entry.slot2);
+                    slot2 = user.username;
                 }
                 formattedSchedule.push(humanDate + ": Slot 1: " + slot1 + "; " + "Slot 2: " + slot2);
             }
@@ -91,13 +100,16 @@ module.exports = function (msg, args) {
 
     // Command: !pc cancel DD-MM; 
     // This will cancel the reservation the requested date and return the token
-    if (args.length == 2 && args[0].toLowerCase() === "cancel") {
+    if ((args.length == 2 && args[0].toLowerCase() === "cancel" && !checkRole("Board", msg)) || (args.length == 3 && args[0].toLowerCase() === "cancel" && checkRole("Board", msg))) {
         // First check if args[1] is in a date format: DD-MM before calling function
         if (!checkDateFormat(args[1], msg)) {
             return;
         }
 
-        cancelSlot(msg);
+        cancelSlot(msg, args);
+    } else if (checkRole("Board", msg) && args.length == 2 && args[0].toLowerCase() === "cancel") {
+        msg.channel.send("As a board member you have to specify which slot you would like to cancel on the requested date with + " +
+        "`!pc cancel DD-MM 1` for slot 1 or `!pc cancel DD-MM 2` for slot 2");
     }
 
     // Command only for board and moderators: !pc remove DD-MM; 
@@ -119,12 +131,116 @@ module.exports = function (msg, args) {
 
 // Reserve the slot stored inside the dateObj and consumes a token
 function reserveSlot(msg) {
-    // TODO: write function
+    let tokenUserData = client.getUserToken.get(msg.author.id);
+    if (!tokenUserData) {
+        msg.channel.send("There was an error with retrieving your data in the dataset." + 
+        "This might be because you just got the captain role, try again at the start of next month. If this is not the case then please contact AkBob.");
+        return;
+    }
+    
+    var now = new Date();
+    if (now.getDate() < 15 && dateObj.getMonth() > now.getMonth() && !checkRole("Board", msg)) {
+        msg.channel.send("You can only reserve slots in the next month after the 15th.");
+        return;
+    }
+
+    if (requestedEntryDate.slot1 !== "" && requestedEntryDate.slot2 !== "") {
+        msg.channel.send("The slots on the requested date are filled. If you are a board member than you can first cancel these reservations with `!pc cancel DD-MM`");
+        return;
+    }
+
+    // Check if the user has tokens left
+    if ((tokenUserData.tokens > 0)) {
+        console.log("here?");
+        // Board members dont have to use tokens
+        if (!checkRole("Board", msg)) {
+            tokenUserData.tokens -= 1;
+            client.setToken.run(tokenUserData);
+        }
+
+        // Check which slot is open and reserve the open slot
+        let slot = 0;
+        if (requestedEntryDate.slot1 === "") {
+            requestedEntryDate.slot1 = msg.author.id;
+            slot = 1;
+        } else if (requestedEntryDate.slot2 === "") {
+            requestedEntryDate.slot2 = msg.author.id;
+            slot = 2;
+        }
+
+        client.setScheduleSlot.run(requestedEntryDate);
+        msg.channel.send("Slot " + slot + " on " + dateObj.toLocaleDateString() + " has been reserved, you can cancel this reservation with `!pc cancel DD-MM`");
+    } else {
+        console.log(tokenUserData.tokens);
+        msg.channel.send("You do not have any tokens left to reserve a slot.");
+    }
 }
 
 // Cancel the reserved slot stored inside the dateObj and returns the token to the owner
-function cancelSlot(msg) {
-    // TODO: write function
+function cancelSlot(msg, args) {
+    let tokenUserData = client.getUserToken.get(msg.author.id);
+    if (!tokenUserData) {
+        msg.channel.send("There was an error with retrieving your data in the dataset." + 
+        "This might be because you just got the captain role, try again at the start of next month. If this is not the case then please contact AkBob.");
+        return;
+    }
+    
+    if (requestedEntryDate.slot1 === "" && requestedEntryDate.slot2 === "") {
+        msg.channel.send("The slots on the requested date are already empty!");
+        return;
+    }
+
+    // Board members dont have to use tokens
+    if (!checkRole("Board", msg)) {
+        let slot = 0;
+        if (requestedEntryDate.slot1 === msg.author.id) {
+            slot = 1;
+            tokenUserData.tokens += 1;
+            tokenUserData.tokens = Math.min(tokenUserData.tokens, MAX_TOKENS);
+            requestedEntryDate.slot1 = "";
+        } else if (requestedEntryDate.slot2 === msg.author.id) {
+            slot = 2;
+            tokenUserData.tokens += 1;
+            tokenUserData.tokens = Math.min(tokenUserData.tokens, MAX_TOKENS);
+            requestedEntryDate.slot2 = "";
+        } else {
+            msg.channel.send("You do not have any reserved slots on the requested date.");
+            return;
+        }
+        
+        client.setScheduleSlot.run(requestedEntryDate);
+        client.setToken.run(tokenUserData);
+        msg.channel.send("Slot " + slot + " on " + dateObj.toLocaleDateString() + " has been canceled. You got your token back.");
+    } else {
+        if (args[2] === "1" && requestedEntryDate.slot1 !== "") {
+            tokenSlotUser = client.getUserToken.get(requestedEntryDate.slot1);
+            if (!tokenSlotUser) {
+                msg.channel.send("There was an error with retrieving the data of the user which reserved the slot, please contact AkBob if you encounter this issue.");
+                return;
+            }
+
+            tokenSlotUser.tokens += 1;
+            tokenSlotUser.tokens = Math.min(tokenSlotUser.tokens, MAX_TOKENS);
+            requestedEntryDate.slot1 = "";
+        } else if (args[2] === "2" && requestedEntryDate.slot2 !== "") {
+            tokenSlotUser = client.getUserToken.get(requestedEntryDate.slot2);
+            if (!tokenSlotUser) {
+                msg.channel.send("There was an error with retrieving the data of the user which reserved the slot, please contact AkBob if you encounter this issue.");
+                return;
+            }
+
+            tokenSlotUser.tokens += 1;
+            tokenSlotUser.tokens = Math.min(tokenSlotUser.tokens, MAX_TOKENS);
+            requestedEntryDate.slot2 = "";
+        } else {
+            msg.channel.send("Slot not found or slot was already empty!");
+            return;
+        }
+
+        client.setScheduleSlot.run(requestedEntryDate);
+        client.setToken.run(tokenSlotUser);
+        msg.channel.send("The reservation on slot " + args[2] + " on " + dateObj.toLocaleDateString() + " was canceled and their token returned.");
+    }
 }
 
 // Removes any reservation inside the dateObj, returns any tokens and removes the date from the schedule
@@ -181,8 +297,14 @@ function checkDateFormat(date, msg) {
 
     // Make a date object for later
     dateObj = new Date(now.getFullYear(), parseInt(dateParts[1], 10) - 1, parseInt(dateParts[0], 10));
+    console.log(dateObj.getDate() + "-" +dateObj.getMonth());
     if (!dateObj) {
         msg.channel.send("An unexpected error occured with processing the date.");
+        return false;
+    }
+
+    if (dateObj.getTime() < now.getTime()) {
+        msg.channel.send("The requested date has already passed!");
         return false;
     }
 
@@ -191,10 +313,9 @@ function checkDateFormat(date, msg) {
     let isTrainingDay = false;
     allDates.forEach(entryDate => {
         let trainingDay = new Date(entryDate.trainingDate);
-        console.log(entryDate.id + "day: " + trainingDay.getDate() + " month: " + trainingDay.getMonth());
-        console.log(entryDate.id + "req day: " + dateObj.getDate() + " req month: " + dateObj.getMonth());
-        if (trainingDay.getDay() == dateObj.getDay() && trainingDay.getMonth() == dateObj.getMonth()) {
+        if (trainingDay.getDate() == dateObj.getDate() && trainingDay.getMonth() == dateObj.getMonth()) {
             isTrainingDay = true;
+            requestedEntryDate = entryDate;
         }
     });
 

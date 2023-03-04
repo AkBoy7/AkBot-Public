@@ -1,6 +1,11 @@
 require('dotenv').config();
 const schedule = require('node-schedule');
+const MAX_TOKENS = 2;
+const TOKEN_GEN = 1;
 
+// TODO: fix bug of multiple entries occuring in database
+
+// Generates Tokens for new Captains and old captain every first day of the month
 module.exports = function (client) {
     const job = schedule.scheduleJob('* * 1 * *', async function(){
         let tokenData = client.getTokenData.all();
@@ -15,12 +20,12 @@ module.exports = function (client) {
         const guild = client.guilds.cache.get(id);
         const members = await guild.members.fetch();
         members.forEach(member => {
-            if (member.roles.cache.has(process.env.CAPTAIN_ROLE_ID)) {
+            if (member.roles.cache.has(process.env.CAPTAIN_ROLE_ID) || member.roles.cache.has(process.env.BOARD_ROLE_ID)) {
                 if (!captains.includes(member.user.id)) {
                     entry = {
                         id: member.user.id,
                         captain: member.user.username,
-                        tokens: 1
+                        tokens: MAX_TOKENS
                     };
                     client.setToken.run(entry);
                 }
@@ -28,7 +33,7 @@ module.exports = function (client) {
         });
 
         tokenData.forEach(entry => {
-             entry.tokens = 1;
+             entry.tokens = Math.min(entry.tokens + TOKEN_GEN, MAX_TOKENS);
              client.setToken.run(entry);
         });
     });

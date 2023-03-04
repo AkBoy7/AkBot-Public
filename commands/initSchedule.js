@@ -24,7 +24,7 @@ module.exports = function (msg, args) {
     let slot2 = ""
 
     var d = new Date();
-    year = d.getYear(),
+    year = d.getYear();
     trainingDates = [];
     console.log(year);
     d.setDate(1);
@@ -54,7 +54,6 @@ module.exports = function (msg, args) {
 
     for (let i = 0; i < trainingDates.length; i++) {
         entry = {
-            id: i,
             trainingDate: trainingDates[i].getTime(),
             slot1: slot1,
             slot2: slot2
