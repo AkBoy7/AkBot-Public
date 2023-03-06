@@ -132,6 +132,7 @@ function setupSQLReqSchedule() {
     client.remTrainingDay = sql.prepare("DELETE FROM scheduleData WHERE trainingDate = ?");
     client.setScheduleSlot = sql.prepare("INSERT OR REPLACE INTO scheduleData (trainingDate, slot1, slot2) VALUES (@trainingDate, @slot1, @slot2);");
     client.removeSchedule = sql.prepare("DROP TABLE scheduleData");
+    client.removeDate = sql.prepare("DELETE FROM scheduleData WHERE trainingDate = ?");
 }
 
 // Initialize function and sql database for tokens for team captains
@@ -140,7 +141,7 @@ function setupSQLTokenData() {
     const table = sql.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'tokenData';").get();
     if (!table['count(*)']) {
         // If the table isn't there, create it and setup the database correctly.
-        sql.prepare("CREATE TABLE tokenData (id INTEGER PRIMARY KEY, captain TEXT, tokens INTEGER);").run();
+        sql.prepare("CREATE TABLE tokenData (id TEXT PRIMARY KEY, captain TEXT, tokens INTEGER);").run();
         // Ensure that the "id" row is always unique and indexed.
         sql.prepare("CREATE UNIQUE INDEX idx_bet_id ON tokenData (id);").run();
         sql.pragma("synchronous = 1");

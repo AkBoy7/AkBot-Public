@@ -1,3 +1,4 @@
+// @ts-check
 const checkRole = require("./methods/checkRole.js");
 require('dotenv').config();
 let dateObj;
@@ -68,7 +69,7 @@ module.exports = function (msg, args) {
         if (formattedSchedule.length == 0) {
             msg.channel.send("The schedule was empty. You might need to use `!initSchedule` if it is a new year.");
         } else {
-            formattedSchedule = formattedSchedule.join(" \n");
+            let formattedEmbedSchedule = formattedSchedule.join(" \n");
 
             const scheduleEmbed = new EmbedBuilder()
             .setColor('#D9D023')
@@ -78,7 +79,7 @@ module.exports = function (msg, args) {
              "Do note you only have one token per month and you can only request a spot of the next month after the 15th of the current month.")
             .setThumbnail('https://i.imgur.com/mXodbnH.png')
             .addFields(
-                { name: 'Schedule next two months', value:  "```" + formattedSchedule + "```"},
+                { name: 'Schedule next two months', value:  "```" + formattedEmbedSchedule + "```"},
             )
             .setTimestamp();
         
@@ -213,7 +214,7 @@ function cancelSlot(msg, args) {
         msg.channel.send("Slot " + slot + " on " + dateObj.toLocaleDateString() + " has been canceled. You got your token back.");
     } else {
         if (args[2] === "1" && requestedEntryDate.slot1 !== "") {
-            tokenSlotUser = client.getUserToken.get(requestedEntryDate.slot1);
+            let tokenSlotUser = client.getUserToken.get(requestedEntryDate.slot1);
             if (!tokenSlotUser) {
                 msg.channel.send("There was an error with retrieving the data of the user which reserved the slot, please contact AkBob if you encounter this issue.");
                 return;
@@ -223,7 +224,7 @@ function cancelSlot(msg, args) {
             tokenSlotUser.tokens = Math.min(tokenSlotUser.tokens, MAX_TOKENS);
             requestedEntryDate.slot1 = "";
         } else if (args[2] === "2" && requestedEntryDate.slot2 !== "") {
-            tokenSlotUser = client.getUserToken.get(requestedEntryDate.slot2);
+            let tokenSlotUser = client.getUserToken.get(requestedEntryDate.slot2);
             if (!tokenSlotUser) {
                 msg.channel.send("There was an error with retrieving the data of the user which reserved the slot, please contact AkBob if you encounter this issue.");
                 return;
@@ -238,6 +239,7 @@ function cancelSlot(msg, args) {
         }
 
         client.setScheduleSlot.run(requestedEntryDate);
+        // @ts-ignore
         client.setToken.run(tokenSlotUser);
         msg.channel.send("The reservation on slot " + args[2] + " on " + dateObj.toLocaleDateString() + " was canceled and their token returned.");
     }
@@ -245,7 +247,39 @@ function cancelSlot(msg, args) {
 
 // Removes any reservation inside the dateObj, returns any tokens and removes the date from the schedule
 function removeSlot(msg) {
-    // TODO: write function
+    if (!checkRole("Board", msg)) {
+        msg.channel.send("You do not have permission for this command!");
+        return;
+    }
+
+    if (requestedEntryDate.slot1 !== "") {
+        let tokenSlotUser = client.getUserToken.get(requestedEntryDate.slot1);
+        if (!tokenSlotUser) {
+            msg.channel.send("There was an error with retrieving the data of the user which reserved the slot, please contact AkBob if you encounter this issue.");
+            return;
+        }
+
+        tokenSlotUser.tokens += 1;
+        tokenSlotUser.tokens = Math.min(tokenSlotUser.tokens, MAX_TOKENS);
+        requestedEntryDate.slot1 = "";
+        msg.channel.send("<@" + tokenSlotUser.id + "> got their token back.");
+    }
+
+    if (requestedEntryDate.slot2 !== "") {
+        let tokenSlotUser = client.getUserToken.get(requestedEntryDate.slot2);
+        if (!tokenSlotUser) {
+            msg.channel.send("There was an error with retrieving the data of the user which reserved the slot, please contact AkBob if you encounter this issue.");
+            return;
+        }
+
+        tokenSlotUser.tokens += 1;
+        tokenSlotUser.tokens = Math.min(tokenSlotUser.tokens, MAX_TOKENS);
+        requestedEntryDate.slot2 = "";
+        msg.channel.send("<@" + tokenSlotUser.id + "> got their token back.");
+    }
+
+    client.removeDate.run(dateObj.getTime());
+    msg.channel.send("The date " + dateObj.toLocaleDateString() + " has been removed from the schedule.");
 }
 
 function helpDescription(msg, EmbedBuilder) {
