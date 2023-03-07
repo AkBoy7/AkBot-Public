@@ -45,10 +45,10 @@ module.exports = async function (msg) {
     client.setData.run(userData);
 
     // for testing in specific channel
-    if (msg.channel.id != process.env.TEST_CHANNELID) {
-        console.log("not correct channel");
-        return;
-    }
+    // if (msg.channel.id != process.env.TEST_CHANNELID) {
+    //     console.log("not correct channel");
+    //     return;
+    // }
 
     //Deletes pins created message when a message of Akbot is pinned
     if(msg.type === "PINS_ADD" && msg.author.bot) {
@@ -87,20 +87,25 @@ module.exports = async function (msg) {
     
     //offensive word detection
     let tokens = msg.content.split(' ');
-    if (!(checkRole("Board", msg) || checkRole("Moderator", msg)) && !msg.author.bot) {
-        var msgContainsBadWord = false;
-        tokens.forEach(word => {
-            if (badMessage(word)) {
-                msgContainsBadWord = true;
+    try {
+        if (!(checkRole("Board", msg) || checkRole("Moderator", msg)) && !msg.author.bot) {
+            var msgContainsBadWord = false;
+            tokens.forEach(word => {
+                if (badMessage(word)) {
+                    msgContainsBadWord = true;
+                }
+            });
+            if (msgContainsBadWord) {
+                console.log("Detected a bad word from " + msg.author.username);
+                botChannel = client.channels.cache.get(process.env.BOTLOG_CHANNEL_ID);
+                botChannel.send('Detected potential offensive message at: <#' + msg.channel.id + '>, from <@' + msg.author.id + ">.\n"
+                    + "Message content: " + '```' + msg.content + '```');
             }
-        });
-        if (msgContainsBadWord) {
-            console.log("Detected a bad word from " + msg.author.username);
-            botChannel = client.channels.cache.get(process.env.BOTLOG_CHANNEL_ID);
-            botChannel.send('Detected potential offensive message at: <#' + msg.channel.id + '>, from <@' + msg.author.id + ">.\n"
-                + "Message content: " + '```' + msg.content + '```');
         }
+    } catch {
+        console.log("deleted message error");
     }
+
 }
 
 function badMessage(word) {
