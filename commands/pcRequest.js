@@ -11,11 +11,11 @@ const MAX_TOKENS = 2; // This should be the same as in tokenManager.js
 module.exports = function (msg, args) {
     const { EmbedBuilder } = require('discord.js');
     // Only allowed to be used in #pcrequest channel
-    // if (msg.channel.id != process.env.PC_REQUEST_CHANNEL_ID) {
-    //     msg.channel.send("Wrong text channel, please use the pcrequest channel.\n" +
-    //     "If you do not have acces to this channel then message the board or a moderator.");
-    //     return;
-    // }
+    if (msg.channel.id != process.env.PC_REQUEST_CHANNEL_ID) {
+        msg.channel.send("Wrong text channel, please use the pcrequest channel.\n" +
+        "If you do not have acces to this channel then message the board or a moderator.");
+        return;
+    }
     client = msg.client;
 
     // Command: !pc 
@@ -135,7 +135,7 @@ function reserveSlot(msg) {
     let tokenUserData = client.getUserToken.get(msg.author.id);
     if (!tokenUserData) {
         msg.channel.send("There was an error with retrieving your data in the dataset." + 
-        "This might be because you just got the captain role, try again at the start of next month. If this is not the case then please contact AkBob.");
+        "This might be because you just got the captain role, try again at the start of next month. Or you might be mod abusing. If this is not the case then please contact AkBob.");
         return;
     }
     
@@ -146,7 +146,7 @@ function reserveSlot(msg) {
     }
 
     if (requestedEntryDate.slot1 !== "" && requestedEntryDate.slot2 !== "") {
-        msg.channel.send("The slots on the requested date are filled. If you are a board member than you can first cancel these reservations with `!pc cancel DD-MM`");
+        msg.channel.send("The slots on the requested date are filled. If you are a board member than you can first cancel these reservations with `!pc cancel DD-MM slotnumber`");
         return;
     }
 
@@ -213,8 +213,9 @@ function cancelSlot(msg, args) {
         client.setToken.run(tokenUserData);
         msg.channel.send("Slot " + slot + " on " + dateObj.toLocaleDateString() + " has been canceled. You got your token back.");
     } else {
+        let tokenSlotUser;
         if (args[2] === "1" && requestedEntryDate.slot1 !== "") {
-            let tokenSlotUser = client.getUserToken.get(requestedEntryDate.slot1);
+            tokenSlotUser = client.getUserToken.get(requestedEntryDate.slot1);
             if (!tokenSlotUser) {
                 msg.channel.send("There was an error with retrieving the data of the user which reserved the slot, please contact AkBob if you encounter this issue.");
                 return;
@@ -224,7 +225,7 @@ function cancelSlot(msg, args) {
             tokenSlotUser.tokens = Math.min(tokenSlotUser.tokens, MAX_TOKENS);
             requestedEntryDate.slot1 = "";
         } else if (args[2] === "2" && requestedEntryDate.slot2 !== "") {
-            let tokenSlotUser = client.getUserToken.get(requestedEntryDate.slot2);
+            tokenSlotUser = client.getUserToken.get(requestedEntryDate.slot2);
             if (!tokenSlotUser) {
                 msg.channel.send("There was an error with retrieving the data of the user which reserved the slot, please contact AkBob if you encounter this issue.");
                 return;
@@ -261,6 +262,8 @@ function removeSlot(msg) {
 
         tokenSlotUser.tokens += 1;
         tokenSlotUser.tokens = Math.min(tokenSlotUser.tokens, MAX_TOKENS);
+        client.setToken.run(tokenSlotUser);
+
         requestedEntryDate.slot1 = "";
         msg.channel.send("<@" + tokenSlotUser.id + "> got their token back.");
     }
@@ -274,11 +277,13 @@ function removeSlot(msg) {
 
         tokenSlotUser.tokens += 1;
         tokenSlotUser.tokens = Math.min(tokenSlotUser.tokens, MAX_TOKENS);
+        client.setToken.run(tokenSlotUser);
+
         requestedEntryDate.slot2 = "";
         msg.channel.send("<@" + tokenSlotUser.id + "> got their token back.");
     }
 
-    client.removeDate.run(dateObj.getTime());
+    client.remTrainingDay.run(requestedEntryDate.trainingDate);
     msg.channel.send("The date " + dateObj.toLocaleDateString() + " has been removed from the schedule.");
 }
 
@@ -331,6 +336,7 @@ function checkDateFormat(date, msg) {
 
     // Make a date object for later
     dateObj = new Date(now.getFullYear(), parseInt(dateParts[1], 10) - 1, parseInt(dateParts[0], 10));
+    // dateObj.setHours(23, 59, 59);
     console.log(dateObj.getDate() + "-" +dateObj.getMonth());
     if (!dateObj) {
         msg.channel.send("An unexpected error occured with processing the date.");

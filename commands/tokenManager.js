@@ -19,7 +19,7 @@ module.exports = function (client) {
         const guild = client.guilds.cache.get(id);
         const members = await guild.members.fetch();
         members.forEach(member => {
-            if (member.roles.cache.has(process.env.CAPTAIN_ROLE_ID || process.env.BOARD_ROLE_ID)) {
+            if (member.roles.cache.has(process.env.CAPTAIN_ROLE_ID) || member.roles.cache.has(process.env.BOARD_ROLE_ID)) {
                 if (!captains.includes(member.user.id)) {
                     entry = {
                         id: member.user.id,
