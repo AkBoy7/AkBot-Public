@@ -28,7 +28,8 @@ const event = require("./commands/event.js");
 const bet = require("./commands/newbet.js");
 const wordle = require("./commands/wordleGuess.js")
 const initSchedule = require("./commands/initSchedule.js")
-const commands = { ak, help, gif, detect, ignore, points, dm, bet, coinflip, app, remindMe, event, wordle, initSchedule };
+const pc = require("./commands/pcRequest.js")
+const commands = { ak, help, gif, detect, ignore, points, dm, bet, coinflip, app, remindMe, event, wordle, initSchedule, pc };
 
 module.exports = async function (msg) {
     const client = msg.client;
@@ -45,6 +46,7 @@ module.exports = async function (msg) {
 
     // for testing in specific channel
     if (msg.channel.id != process.env.TEST_CHANNELID) {
+        console.log("not correct channel");
         return;
     }
 
