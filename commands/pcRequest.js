@@ -35,56 +35,7 @@ module.exports = function (msg, args) {
     // Command: !pc schedule 
     // This will send a schedule of this month and next month
     if (args.length == 1 && args[0].toLowerCase() === "schedule") {
-        let formattedSchedule = [];
-        let allDates = client.getSchedule.all();
-
-        allDates.sort(function(a, b) {
-            return ((a.trainingDate < b.trainingDate) ? -1 : ((a.trainingDate == b.trainingDate) ? 0 : 1));
-        });
-
-        var now = new Date();
-        allDates.forEach(entry => {
-            const dateObject = new Date(entry.trainingDate);
-            if (dateObject.getMonth() >= now.getMonth() && dateObject.getMonth() <= now.getMonth() + 1 && dateObject.getTime() >= now.getTime()) {
-                const humanDate = dateObject.toLocaleDateString();
-                let slot1;
-                let slot2;
-                if (entry.slot1 === "") {
-                    slot1 = "---";
-                } else {
-                    let user = client.users.cache.get(entry.slot1);
-                    slot1 = user.username;
-                }
-    
-                if (entry.slot2 === "") {
-                    slot2 = "---";
-                } else {
-                    let user = client.users.cache.get(entry.slot2);
-                    slot2 = user.username;
-                }
-                formattedSchedule.push(humanDate + ": Slot 1: " + slot1 + "; " + "Slot 2: " + slot2);
-            }
-        });
-
-        if (formattedSchedule.length == 0) {
-            msg.channel.send("The schedule was empty. You might need to use `!initSchedule` if it is a new year.");
-        } else {
-            let formattedEmbedSchedule = formattedSchedule.join(" \n");
-
-            const scheduleEmbed = new EmbedBuilder()
-            .setColor('#D9D023')
-            .setTitle('Current Schedule')
-            .setAuthor({name: 'AkBot', iconURL: 'https://i.imgur.com/y21mVd6.png'})
-            .setDescription("If you want to reserve a slot on a specific date below, than use the command `!pc request DD-MM`. " +
-             "Do note you only have one token per month and you can only request a spot of the next month after the 15th of the current month.")
-            .setThumbnail('https://i.imgur.com/mXodbnH.png')
-            .addFields(
-                { name: 'Schedule next two months', value:  "```" + formattedEmbedSchedule + "```"},
-            )
-            .setTimestamp();
-        
-            msg.channel.send({embeds: [scheduleEmbed]});
-        }
+        printSchedule(msg, EmbedBuilder);
         return;
     }
 
@@ -96,7 +47,7 @@ module.exports = function (msg, args) {
             return;
         }
 
-        reserveSlot(msg);
+        reserveSlot(msg, EmbedBuilder);
     }
 
     // Command: !pc cancel DD-MM; 
@@ -107,7 +58,7 @@ module.exports = function (msg, args) {
             return;
         }
 
-        cancelSlot(msg, args);
+        cancelSlot(msg, EmbedBuilder, args);
     } else if (checkRole("Board", msg) && args.length == 2 && args[0].toLowerCase() === "cancel") {
         msg.channel.send("As a board member you have to specify which slot you would like to cancel on the requested date with + " +
         "`!pc cancel DD-MM 1` for slot 1 or `!pc cancel DD-MM 2` for slot 2");
@@ -131,7 +82,7 @@ module.exports = function (msg, args) {
 }
 
 // Reserve the slot stored inside the dateObj and consumes a token
-function reserveSlot(msg) {
+function reserveSlot(msg, EmbedBuilder) {
     let tokenUserData = client.getUserToken.get(msg.author.id);
     if (!tokenUserData) {
         msg.channel.send("There was an error with retrieving your data in the dataset." + 
@@ -171,6 +122,7 @@ function reserveSlot(msg) {
 
         client.setScheduleSlot.run(requestedEntryDate);
         msg.channel.send("Slot " + slot + " on " + dateObj.toLocaleDateString() + " has been reserved, you can cancel this reservation with `!pc cancel DD-MM`");
+        printSchedule(msg, EmbedBuilder);
     } else {
         console.log(tokenUserData.tokens);
         msg.channel.send("You do not have any tokens left to reserve a slot.");
@@ -178,7 +130,7 @@ function reserveSlot(msg) {
 }
 
 // Cancel the reserved slot stored inside the dateObj and returns the token to the owner
-function cancelSlot(msg, args) {
+function cancelSlot(msg, EmbedBuilder, args) {
     let tokenUserData = client.getUserToken.get(msg.author.id);
     if (!tokenUserData) {
         msg.channel.send("There was an error with retrieving your data in the dataset." + 
@@ -243,6 +195,7 @@ function cancelSlot(msg, args) {
         // @ts-ignore
         client.setToken.run(tokenSlotUser);
         msg.channel.send("The reservation on slot " + args[2] + " on " + dateObj.toLocaleDateString() + " was canceled and their token returned.");
+        printSchedule(msg, EmbedBuilder);
     }
 }
 
@@ -366,4 +319,58 @@ function checkDateFormat(date, msg) {
 
     console.log("Date checked and correct!");
     return true;
+}
+
+function printSchedule(msg, EmbedBuilder) {
+    let formattedSchedule = [];
+    let allDates = client.getSchedule.all();
+
+    allDates.sort(function(a, b) {
+        return ((a.trainingDate < b.trainingDate) ? -1 : ((a.trainingDate == b.trainingDate) ? 0 : 1));
+    });
+
+    var now = new Date();
+    allDates.forEach(entry => {
+        const dateObject = new Date(entry.trainingDate);
+        if (dateObject.getMonth() >= now.getMonth() && dateObject.getMonth() <= now.getMonth() + 1 && dateObject.getTime() >= now.getTime()) {
+            const humanDate = dateObject.toLocaleDateString();
+            let slot1;
+            let slot2;
+            if (entry.slot1 === "") {
+                slot1 = "---";
+            } else {
+                let user = client.users.cache.get(entry.slot1);
+                slot1 = user.username;
+            }
+
+            if (entry.slot2 === "") {
+                slot2 = "---";
+            } else {
+                let user = client.users.cache.get(entry.slot2);
+                slot2 = user.username;
+            }
+            formattedSchedule.push(humanDate + ": Slot 1: " + slot1 + "; " + "Slot 2: " + slot2);
+        }
+    });
+
+    if (formattedSchedule.length == 0) {
+        msg.channel.send("The schedule was empty. You might need to use `!initSchedule` if it is a new year.");
+    } else {
+        let formattedEmbedSchedule = formattedSchedule.join(" \n");
+
+        const scheduleEmbed = new EmbedBuilder()
+        .setColor('#D9D023')
+        .setTitle('Current Schedule')
+        .setAuthor({name: 'AkBot', iconURL: 'https://i.imgur.com/y21mVd6.png'})
+        .setDescription("If you want to reserve a slot on a specific date below, than use the command `!pc request DD-MM`. " +
+         "Do note you only have one token per month and you can only request a spot of the next month after the 15th of the current month.")
+        .setThumbnail('https://i.imgur.com/mXodbnH.png')
+        .addFields(
+            { name: 'Schedule next two months', value:  "```" + formattedEmbedSchedule + "```"},
+        )
+        .setTimestamp();
+    
+        msg.channel.send({embeds: [scheduleEmbed]});
+    }
+    return;
 }
