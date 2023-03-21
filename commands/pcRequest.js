@@ -321,13 +321,19 @@ function checkDateFormat(date, msg) {
     return true;
 }
 
-function printSchedule(msg, EmbedBuilder) {
+async function printSchedule(msg, EmbedBuilder) {
     let formattedSchedule = [];
     let allDates = client.getSchedule.all();
 
     allDates.sort(function(a, b) {
         return ((a.trainingDate < b.trainingDate) ? -1 : ((a.trainingDate == b.trainingDate) ? 0 : 1));
     });
+
+    // Update the cache
+    const id = process.env.ZEPHYR_SERVER_ID;
+    
+    const guild = client.guilds.cache.get(id);
+    const members = await guild.members.fetch();
 
     var now = new Date();
     allDates.forEach(entry => {
