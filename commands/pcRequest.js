@@ -195,8 +195,8 @@ function cancelSlot(msg, EmbedBuilder, args) {
         // @ts-ignore
         client.setToken.run(tokenSlotUser);
         msg.channel.send("The reservation on slot " + args[2] + " on " + dateObj.toLocaleDateString() + " was canceled and their token returned.");
-        printSchedule(msg, EmbedBuilder);
     }
+    printSchedule(msg, EmbedBuilder);
 }
 
 // Removes any reservation inside the dateObj, returns any tokens and removes the date from the schedule
