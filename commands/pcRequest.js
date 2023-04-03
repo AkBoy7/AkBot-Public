@@ -143,7 +143,7 @@ function cancelSlot(msg, EmbedBuilder, args) {
         return;
     }
 
-    // Board members dont have to use tokens
+    // Board members dont have to use tokens, else part is for normal members
     if (!checkRole("Board", msg)) {
         let slot = 0;
         if (requestedEntryDate.slot1 === msg.author.id) {
