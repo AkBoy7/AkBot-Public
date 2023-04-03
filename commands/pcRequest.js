@@ -289,7 +289,7 @@ function checkDateFormat(date, msg) {
 
     // Make a date object for later
     dateObj = new Date(now.getFullYear(), parseInt(dateParts[1], 10) - 1, parseInt(dateParts[0], 10));
-    // dateObj.setHours(23, 59, 59);
+    dateObj.setHours(23, 59, 59);
     console.log(dateObj.getDate() + "-" +dateObj.getMonth());
     if (!dateObj) {
         msg.channel.send("An unexpected error occured with processing the date.");
