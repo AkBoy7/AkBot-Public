@@ -296,7 +296,7 @@ function checkDateFormat(date, msg) {
         return false;
     }
 
-    if (dateObj.getTime() < now.getTime()) {
+    if (dateObj.getTime() <= now.getTime()) {
         msg.channel.send("The requested date has already passed!");
         return false;
     }
