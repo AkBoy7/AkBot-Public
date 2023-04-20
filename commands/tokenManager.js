@@ -6,7 +6,7 @@ const TOKEN_GEN = 1;
 // Generates Tokens for new Captains and old captain every first day of the month
 module.exports = function (client) {
     // This runs at the start of every month on the first 01-XX-20XX
-    const job = schedule.scheduleJob('* * 1 * *', async function(){
+    const job = schedule.scheduleJob('* * 1,15 * *', async function(){
         console.log("New Month generating tokens");
         let tokenData = client.getTokenData.all();
         // Get a list of captains already in the dataset
