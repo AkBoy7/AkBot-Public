@@ -3,9 +3,6 @@ const db = require('quick.db');
 const humanizeDuration = require('humanize-duration');
 const generateScore = require('./methods/generateScore');
 
-const freePoints = 300;
-const MAX_TOKENS = 2;
-
 const checkRole = require("./methods/checkRole.js");
 const read = require('./methods/read');
 const write = require('./methods/write');
@@ -29,30 +26,16 @@ module.exports = async function (msg, args) {
         msg.reply(`You currently have ${score.points} AkPoints! ` + "For more information use: ```!points help```");
         return;
     } else if (args[0] === "help") {
-        msg.channel.send("AkPoints do not have any value or meaning other then to flex on your friends on the leaderboard.\nYou get AkPoints by typing `!points get` and also by joining our acitivities.\nAkBot can remind you when your cooldown is over with `!remindMe`. You can also get more AkPoints by betting them on your favorite teams, use `!bet` command for more information.");
+        msg.channel.send("AkPoints do not have any value or meaning other then to flex on your friends on the leaderboard.\nYou get AkPoints through various means: joining our activities, solving wordles and being active.");
+        msg.channel.send("```900 AkPoints for joining events.\n250-2200 Possible AkPoints for solving wordles.\n10-100 AkPoints for being active in the discord.\n+10% more AkPoints per committee you are in.```")
     } else if (args[0] === "get") {
         console.log("AkPoints requested by " + msg.author.username);
 
-        if (score.cooldown !== 0 && cooldown - (Date.now() - score.cooldown) > 0) {
-            // If user still has a cooldown
-            const remaining = humanizeDuration(cooldown - (Date.now() - score.cooldown), { delimiter: " and ", round: true, units: ["d", "h", "m"] });
-            msg.channel.send(`Wait ${remaining} before typing this command again. ` + "To know when the command is available again you can use the ``!remindMe`` command. <@" + msg.author.id + ">.");
-        } else {
-            let alreadyReminded = read("./commands/reminderDone.json");
-            if (alreadyReminded.includes(msg.author.id)) {
-                const index = alreadyReminded.indexOf(msg.author.id);
-                if (index > -1) {
-                    alreadyReminded.splice(index, 1);
-                    write(alreadyReminded, "./commands/reminderDone.json");
-                }
-            }
-            score.points += freePoints;
-            score.cooldown = Date.now();
-            score.tokens = MAX_TOKENS;
-            client.setScore.run(score);
-            const remaining = humanizeDuration(cooldown - (Date.now() - score.cooldown), { delimiter: " and ", round: true, units: ["d", "h", "m"] });
-            msg.reply("You have gained " + freePoints + ` AkPoints and `  + MAX_TOKENS + ` Wordle tokens! You can only have up to `  + MAX_TOKENS + ` tokens at once.\nCurrently you have ${score.points} AkPoints! You can use this command again after ${remaining}`);
-        }
+        msg.channel.send("`!points get` is no longer a command. How do you get akpoints now? You get AkPoints by being active! The main ways of receiving akpoints are now through the following ways:\n" +
+            "```" + "Joining events and reacting to the message.\nSolving wordles together with !wordle\nBeing active in the discord, " +
+            "talking with each other in voice and chat, making forum post, and being active in Zephyr by joining committees\n" +
+            "If you want to know the specific point total use `!points help`.");
+        
     } else if (checkRole("Board", msg) || checkRole("Moderator", msg)) {
         //Moderator specific messages
         const mentioneduser = msg.mentions.users.first();
@@ -66,15 +49,7 @@ module.exports = async function (msg, args) {
             let userScore = client.getScore.get(nameID);
             console.log(userScore);
             if (!userScore) {
-                userScore = {
-                    id: `${nameID}`,
-                    user: nameID,
-                    points: 0,
-                    bids: "",
-                    amount: "",
-                    cooldown: 0,
-                    tokens: MAX_TOKENS
-                }
+                score = generateScore(msg);
             }
 
             let pointReq = parseInt(args[2], 10);

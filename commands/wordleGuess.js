@@ -3,11 +3,14 @@ const write = require("./methods/write.js");
 const checkGuess = require("./methods/checkGuess.js");
 const generateScore = require("./methods/generateScore");
 
-const TOTALPOINTSWIN = 2500
+const cooldown = 86400000; //1 day
+const humanizeDuration = require('humanize-duration');
+
+const TOTALPOINTSWIN = 2000
 
 module.exports = function (msg, args) {
     if (args.length == 0) {
-        msg.channel.send("This is a beta version of Akbot Wordle. How does this work?\n" +
+        msg.channel.send("This is Akbot Wordle. How does this work?\n" +
         "Every 12-24 hours there is a new 5 letter word generated, users can guess the word with the command `!wordle guess`\n" +
         "I will then send red squares for letters which are not in the word, yellow for letters that are in the word but in a different position,"+
         "and green squares for letters that are in the word and are in the correct position\n" +
@@ -35,24 +38,17 @@ module.exports = function (msg, args) {
         return
     }
 
-    let userguess = client.getScore.get(msg.author.id);
+    let score = client.getScore.get(msg.author.id);
     // Creates new table if user does not have one yet
-    if (!userguess) {
-        msg.channel.send("You have no more Wordle tokens to use to guess this Wordle! Try `!points get` to get more tokens.")
-        return;
-    }
-    if (userguess.tokens == 0) {
-        msg.channel.send("You have no more Wordle tokens to use to guess this Wordle! Try `!points get` to get more tokens.")
+    if (score.cooldown !== 0 && cooldown - (Date.now() - score.cooldown) > 0) {
+        // If user still has a cooldown
+        const remaining = humanizeDuration(cooldown - (Date.now() - score.cooldown), { delimiter: " and ", round: true, units: ["d", "h", "m"] });
+        msg.channel.send(`You must wait ${remaining} before you can do another Wordle. ` + "<@" + msg.author.id + ">.");
         return;
     } else {
-        userguess.tokens = userguess.tokens - 1;
-        if (userguess.tokens < 0) {
-            msg.channel.send("Something unexpected happened?? message AkBob please!");
-            return;
-        }
-        client.setScore.run(userguess);
+        score.cooldown = Date.now();
+        client.setScore.run(score);
     }
-
     
     let result = checkGuess(msg, args[0], correctString)
     let userData = client.getData.get(msg.author.id);
@@ -69,11 +65,11 @@ module.exports = function (msg, args) {
                 score = generateScore(msg)
             }
 
-            score.points = score.points + pointsDivided;
-            msg.channel.send("<@" + user + "> has won " + pointsDivided + " AkPoints!")
+            score.points = score.points + (pointsDivided * score.bonus);
+            msg.channel.send("<@" + user + "> has won " + (pointsDivided * score.bonus) + " AkPoints!")
             if (msg.author.id == user) {
-                msg.channel.send("<@" + user + "> has won an additional 250 AkPoints for guessing the correct word!")
-                score.points = score.points + 250;
+                msg.channel.send("<@" + user + "> has won an additional " + (200 * score.bonus) + " AkPoints for guessing the correct word!")
+                score.points = score.points + (200 * score.bonus);
             }
             client.setScore.run(score);
 

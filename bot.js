@@ -65,7 +65,7 @@ function setupSQL() {
     const table = sql.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'akbotData';").get();
     if (!table['count(*)']) {
         // If the table isn't there, create it and setup the database correctly.
-        sql.prepare("CREATE TABLE akbotData (id TEXT PRIMARY KEY, user TEXT, points INTEGER, bids TEXT, amount TEXT, cooldown INTEGER, tokens INTEGER);").run();
+        sql.prepare("CREATE TABLE akbotData (id TEXT PRIMARY KEY, user TEXT, points INTEGER, bids TEXT, amount TEXT, cooldown INTEGER, bonus DOUBLE);").run();
         // Ensure that the "id" row is always unique and indexed.
         sql.prepare("CREATE UNIQUE INDEX idx_scores_id ON akbotData (id);").run();
         sql.pragma("synchronous = 1");
@@ -74,7 +74,7 @@ function setupSQL() {
 
     // And then we have two prepared statements to get and set the score data.
     client.getScore = sql.prepare("SELECT * FROM akbotData WHERE user = ?");
-    client.setScore = sql.prepare("INSERT OR REPLACE INTO akbotData (id, user, points, bids, amount, cooldown, tokens) VALUES (@id, @user, @points, @bids, @amount, @cooldown, @tokens);");
+    client.setScore = sql.prepare("INSERT OR REPLACE INTO akbotData (id, user, points, bids, amount, cooldown, bonus) VALUES (@id, @user, @points, @bids, @amount, @cooldown, @bonus);");
     client.getUsersBids = sql.prepare("SELECT * FROM akbotData WHERE bids != ?");
     client.getUsers = sql.prepare("SELECT * FROM akbotData");
 }

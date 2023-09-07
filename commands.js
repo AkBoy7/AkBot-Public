@@ -33,6 +33,10 @@ const commands = { ak, help, gif, detect, ignore, points, dm, bet, coinflip, app
 
 module.exports = async function (msg) {
     const client = msg.client;
+    let score = client.getScore.get(msg.author.id);
+    if (!score) {
+        score = generateScore(msg);
+    }
     let userData = client.getData.get(msg.author.id);
     //creates mew table if user does not have one yet
     if (!userData) {

@@ -53,22 +53,14 @@ module.exports = async function (msg, args) {
                                 let userScore = client.getScore.get(particpant);
                                 console.log(userScore);
                                 if (!userScore) {
-                                    userScore = {
-                                    id: `${particpant}`,
-                                    user: particpant,
-                                    points: 0,
-                                    bids: "",
-                                    amount: "",
-                                    cooldown: 0,
-                                    tokens: 2
-                                    }
+                                    userScore = generateScore(msg);
                                 }
                                 let userData = client.getData.get(particpant);
                                 if (!userData) {
                                     userData = generateUserData(participant);
                                     console.log("New User Data created (event) for " + msg.author.username);
                                 }
-                                userScore.points += freeEventPoints;
+                                userScore.points = (freeEventPoints*userScore.bonus) + userScore.points;
                                 client.setScore.run(userScore);
                                 msg.channel.send("Thank you for joining the Zephyr event <@" + particpant + ">, here are your free `" + freeEventPoints + "` AkPoints. Your total is now: `" + userScore.points + "`");
                                 userData.eventsJoined += 1;
