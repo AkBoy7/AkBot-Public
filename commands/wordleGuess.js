@@ -39,7 +39,7 @@ module.exports = function (msg, args) {
     }
 
     let score = client.getScore.get(msg.author.id);
-    // Creates new table if user does not have one yet
+    
     if (score.cooldown !== 0 && cooldown - (Date.now() - score.cooldown) > 0) {
         // If user still has a cooldown
         const remaining = humanizeDuration(cooldown - (Date.now() - score.cooldown), { delimiter: " and ", round: true, units: ["d", "h", "m"] });
@@ -72,9 +72,8 @@ module.exports = function (msg, args) {
                 score.points = score.points + (200 * score.bonus);
             }
             client.setScore.run(score);
-
-            userData.wordleCorrectGuess += 1;
         });
+        userData.wordleCorrectGuess += 1;
         guessedUsers = []
     } else if (result === "wrong") {
         amountOfGuesses -= 1

@@ -27,13 +27,12 @@ module.exports = async function (msg, args) {
         return;
     } else if (args[0] === "help") {
         msg.channel.send("AkPoints do not have any value or meaning other then to flex on your friends on the leaderboard.\nYou get AkPoints through various means: joining our activities, solving wordles and being active.");
-        msg.channel.send("```900 AkPoints for joining events.\n250-2200 Possible AkPoints for solving wordles.\n10-100 AkPoints for being active in the discord.\n+10% more AkPoints per committee you are in.```")
+        msg.channel.send("```900 AkPoints for joining events.\n250-2200 Possible AkPoints for solving wordles.\n+10% more AkPoints per committee you are in.```")
     } else if (args[0] === "get") {
         console.log("AkPoints requested by " + msg.author.username);
 
         msg.channel.send("`!points get` is no longer a command. How do you get akpoints now? You get AkPoints by being active! The main ways of receiving akpoints are now through the following ways:\n" +
-            "```" + "Joining events and reacting to the message.\nSolving wordles together with !wordle\nBeing active in the discord, " +
-            "talking with each other in voice and chat, making forum post, and being active in Zephyr by joining committees\n" +
+            "```" + "- Joining events and reacting to the message.\n- Solving wordles together with !wordle\n- Joining committees (+10% bonus in AkPoints generation per committee)```\n" +
             "If you want to know the specific point total use `!points help`.");
         
     } else if (checkRole("Board", msg) || checkRole("Moderator", msg)) {

@@ -9,6 +9,7 @@ var badwordsArray = read("./badwordslist.json");
 var ignoreList = read("./ignore.json");
 const checkRole = require("./commands/methods/checkRole.js");
 const generateUserData = require('./commands/methods/generateUserData.js');
+const generateScore = require("./commands/methods/generateScore");
 
 //all the commands AkBot currently supports
 const ak = require("./commands/ak.js");
@@ -32,11 +33,26 @@ const pc = require("./commands/pcRequest.js")
 const commands = { ak, help, gif, detect, ignore, points, dm, bet, coinflip, app, remindMe, event, wordle, initSchedule, pc };
 
 module.exports = async function (msg) {
+    // Ignore bots
+    if (msg.author.bot) {
+        return;
+    }
+
     const client = msg.client;
     let score = client.getScore.get(msg.author.id);
     if (!score) {
         score = generateScore(msg);
     }
+
+    let rolesBonus = 0;
+    msg.member.roles.cache.forEach(role => {
+        if (role.name.includes("Committee")) {
+            rolesBonus += 1;
+        }
+    });
+    score.bonus = 1 + (rolesBonus / 10.0);
+    client.setScore.run(score);
+
     let userData = client.getData.get(msg.author.id);
     //creates mew table if user does not have one yet
     if (!userData) {
@@ -49,14 +65,9 @@ module.exports = async function (msg) {
     client.setData.run(userData);
 
     // for testing in specific channel
-    // if (msg.channel.id != process.env.TEST_CHANNELID) {
-    //     console.log("not correct channel");
-    //     return;
-    // }
-
-    //Deletes pins created message when a message of Akbot is pinned
-    if(msg.type === "PINS_ADD" && msg.author.bot) {
-        msg.delete();
+    if (msg.channel.id != process.env.TEST_CHANNELID) {
+        console.log("not correct channel");
+        return;
     }
     
     //ignore dms and send them to AkBoy

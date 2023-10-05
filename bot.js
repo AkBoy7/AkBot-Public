@@ -23,7 +23,8 @@ const client = new Client({
 		GatewayIntentBits.GuildMessages,
 		GatewayIntentBits.MessageContent,
 		GatewayIntentBits.GuildMembers,
-        GatewayIntentBits.GuildMessageReactions
+        GatewayIntentBits.GuildMessageReactions,
+        GatewayIntentBits.GuildPresences
     ]
 });
 const SQLite = require("better-sqlite3");
@@ -44,7 +45,7 @@ function readyDiscord() {
     setupSQLDataCollection();
     setupSQLReqSchedule();
     setupSQLTokenData();
-    reminder(client);
+    // reminder(client);
     lockin(client);
     wordleGenerator(client);
     tokenManager(client);
