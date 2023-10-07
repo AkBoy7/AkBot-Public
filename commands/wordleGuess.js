@@ -86,9 +86,9 @@ module.exports = function (msg, args) {
             guessedUsers.push(msg.author.id)
         }
     } else if (result === "error") {
-	    score.cooldown = 0;
+        score.cooldown = 0;
         client.setScore.run(score);
-	    userData.wordleGuesses -= 1;
+        userData.wordleGuesses -= 1;
     }
     client.setData.run(userData);
 
