@@ -86,12 +86,8 @@ module.exports = function (msg, args) {
             guessedUsers.push(msg.author.id)
         }
     } else if (result === "error") {
-	    userguess.tokens = userguess.tokens + 1;
-        if (userguess.tokens > 2) {
-            msg.channel.send("Something unexpected happened?? message AkBob please!");
-            return;
-        }
-        client.setScore.run(userguess);
+	    score.cooldown = 0;
+        client.setScore.run(score);
 	    userData.wordleGuesses -= 1;
     }
     client.setData.run(userData);
