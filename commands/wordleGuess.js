@@ -65,11 +65,11 @@ module.exports = function (msg, args) {
                 score = generateScore(msg)
             }
 
-            score.points = score.points + (pointsDivided * score.bonus);
-            msg.channel.send("<@" + user + "> has won " + (pointsDivided * score.bonus) + " AkPoints!")
+            score.points = parseInt(score.points + (pointsDivided * score.bonus));
+            msg.channel.send("<@" + user + "> has won " + parseInt(pointsDivided * score.bonus) + " AkPoints!")
             if (msg.author.id == user) {
-                msg.channel.send("<@" + user + "> has won an additional " + (200 * score.bonus) + " AkPoints for guessing the correct word!")
-                score.points = score.points + (200 * score.bonus);
+                msg.channel.send("<@" + user + "> has won an additional " + parseInt(200 * score.bonus) + " AkPoints for guessing the correct word!")
+                score.points = score.points + parseInt(200 * score.bonus);
             }
             client.setScore.run(score);
         });
