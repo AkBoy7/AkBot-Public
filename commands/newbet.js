@@ -37,13 +37,13 @@ module.exports = async function (msg, args) {
         for (var i = 0; i < users.length; i++) {
             
             if (i == 0) {
-                userLeaderboard.push(":first_place: <@" + users[i].id + "> - " + users[i].points);
+                userLeaderboard.push(":first_place: <@" + users[i].id + "> - " + parseInt(users[i].points));
             } else if (i == 1) {
-                userLeaderboard.push(":second_place: <@" + users[i].id + "> - " + users[i].points);
+                userLeaderboard.push(":second_place: <@" + users[i].id + "> - " + parseInt(users[i].points));
             } else if (i == 2) {
-                userLeaderboard.push(":third_place: <@" + users[i].id + "> - " + users[i].points);
+                userLeaderboard.push(":third_place: <@" + users[i].id + "> - " + parseInt(users[i].points));
             } else if (i <= 9){
-                userLeaderboard.push(" <@" + users[i].id + "> - " + users[i].points);
+                userLeaderboard.push(" <@" + users[i].id + "> - " + parseInt(users[i].points));
             } else {
                 break;
             }
