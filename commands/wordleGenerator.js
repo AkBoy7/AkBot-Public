@@ -10,7 +10,7 @@ module.exports = function (client) {
 
 function loop(client) {
     const max = 1000 * 60 * 60 * 12;
-    const min = 1000 * 60 * 60 * 24;
+    const min = 1000 * 60 * 60 * 6;
     var rand = parseInt(Math.random() * (max - min) + min); 
     console.log(rand);
     setTimeout(function() {
