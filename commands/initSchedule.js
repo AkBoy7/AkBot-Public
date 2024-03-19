@@ -14,7 +14,10 @@ module.exports = function (msg, args) {
             return;
         } else if (args[0].toLowerCase() === "force") {
             msg.channel.send("Forced generating new Schedule...");
-            //msg.client.removeSchedule.run();
+            msg.client.removeSchedule.run();
+        } else {
+            msg.channel.send("unknown command did you mean `!initSchedule force`?");
+            return;
         }
     } else {
         msg.channel.send("Generating new Schedule...");
@@ -29,8 +32,8 @@ module.exports = function (msg, args) {
     console.log(year);
     d.setDate(1);
 
-    // Get the first Monday or Wednesday in the month (0-6 Sunday - Saturday)
-    while (d.getDay() !== 1 && d.getDay() !== 3) {
+    // Get the first Monday or Wednesday (or Tuesday) in the month (0-6 Sunday - Saturday)
+    while (d.getDay() !== 1 && d.getDay() !== 3 && d.getDay() !== 2) {
         d.setDate(d.getDate() + 1);
     }
 
@@ -43,10 +46,13 @@ module.exports = function (msg, args) {
         var pushDate = new Date(d.getTime());
         trainingDates.push(pushDate);
 
-        // if monday go to wednesday, else go from wednesday to monday
+        // if monday go to tuesday, if tuesday go to wednesday, else go from wednesday to monday
         if (d.getDay() == 1) {
-            d.setDate(d.getDate() + 2);
-        } else {
+            d.setDate(d.getDate() + 1);
+        } else if (d.getDay() == 2) {
+            d.setDate(d.getDate() + 1);
+        }
+        else {
             d.setDate(d.getDate() + 5);
         }
     }

@@ -132,7 +132,7 @@ function setupSQLReqSchedule() {
     client.getSchedule = sql.prepare("SELECT * FROM scheduleData");
     client.remTrainingDay = sql.prepare("DELETE FROM scheduleData WHERE trainingDate = ?");
     client.setScheduleSlot = sql.prepare("INSERT OR REPLACE INTO scheduleData (trainingDate, slot1, slot2) VALUES (@trainingDate, @slot1, @slot2);");
-    client.removeSchedule = sql.prepare("DROP TABLE scheduleData");
+    client.removeSchedule = sql.prepare("DELETE FROM scheduleData");
     client.removeDate = sql.prepare("DELETE FROM scheduleData WHERE trainingDate = ?");
 }
 
