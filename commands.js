@@ -30,7 +30,8 @@ const bet = require("./commands/newbet.js");
 const wordle = require("./commands/wordleGuess.js")
 const initSchedule = require("./commands/initSchedule.js")
 const pc = require("./commands/pcRequest.js")
-const commands = { ak, help, gif, detect, ignore, points, dm, bet, coinflip, app, remindMe, event, wordle, initSchedule, pc };
+const captcha = require("./commands/captcha.js")
+const commands = { ak, help, gif, detect, ignore, points, dm, bet, coinflip, app, remindMe, event, wordle, initSchedule, pc, captcha };
 
 module.exports = async function (msg) {
     // Ignore bots
