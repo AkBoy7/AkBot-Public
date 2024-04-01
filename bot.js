@@ -25,7 +25,8 @@ const client = new Client({
 		GatewayIntentBits.GuildMembers,
         GatewayIntentBits.GuildMessageReactions,
         GatewayIntentBits.GuildPresences
-    ]
+    ],
+    allowedMentions: {parse: ["roles", "users"], repliedUser: true}
 });
 const SQLite = require("better-sqlite3");
 const sql = new SQLite('./akbotData.sqlite');

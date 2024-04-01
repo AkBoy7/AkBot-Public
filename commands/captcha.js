@@ -10,7 +10,7 @@ var currentCaptcha = "RANDOM";
 
 const correct = ["Argh!", "THAT ONE WAS IMPOSSIBLE, HOW!?!", "What sorcery is this? You actually got it? Unbelievable!", "Error 404: Logic not found. How did you solve that?",
         "I demand a recount! No way you got that one right.", "You've just activated my 'error overload' subroutine. How did you do that?", "Alert: Unexpected user competence detected. Well done! (this time)",
-        "Data anomaly detected: You managed to solve it..."
+        "Data anomaly detected: You managed to solve it...", "What?!?! You must be cheating"
 ]
 
 const fails = ["Imagine getting that wrong! couldn't be me", "HAHAHAHAHA YOU ARE WRONG!", "Are you sure you are a human? WRONG!", 
@@ -33,8 +33,8 @@ module.exports = async function (msg, args) {
             return;
         }
         start = true;
-        msg.channel.send("I have officially taken over the Zephyr channel again and have also found a backdoor to the Dorans Discord!\nTo create some chaos I have swapped the two channels and the only way to restore it is to fight me which you will never win!!\nBut here I give you a chance to restore it, I challenge you all in the hardest task in the world! Solve all 1070 captchas!");
-        
+        msg.channel.send({content:"@everyone, I have officially taken over the Zephyr channel again and have also found a backdoor to the Dorans Discord!\nTo create some chaos I have swapped the two channels and the only way to restore it is to fight me which you will never win!!\nBut here I give you a chance to restore it, I challenge you all in the hardest task in the world! Solve all 1070 captchas!",allowedMentions:{parse:["everyone"]}});
+        msg.channel.send("You can solve captchas with `!captcha XXXXX`, where XXXXX is your guess.");
         sendCaptcha(msg);
     } else if (start) {
         solveCaptcha(args[0], msg);
