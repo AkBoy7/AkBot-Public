@@ -3,10 +3,21 @@ require('dotenv').config();
 const { AttachmentBuilder } = require('discord.js')
 var fs = require('fs');
 var files = fs.readdirSync(__dirname + '/captchas/');
+var airplane = fs.readdirSync(__dirname + '/phasetwo/airplane');
+var bicycle = fs.readdirSync(__dirname + '/phasetwo/bicycle');
+var boat = fs.readdirSync(__dirname + '/phasetwo/boat');
+var motorbus = fs.readdirSync(__dirname + '/phasetwo/motorbus');
+var motorcycle = fs.readdirSync(__dirname + '/phasetwo/motorcycle');
+var seaplane = fs.readdirSync(__dirname + '/phasetwo/seaplane');
+var train = fs.readdirSync(__dirname + '/phasetwo/train');
+var truck = fs.readdirSync(__dirname + '/phasetwo/truck');
+var allOptions = [airplane, bicycle, boat, motorbus, motorcycle, seaplane, train, truck];
+var allStrings = ["airplane", "bicycle", "boat", "motorbus", "motorcycle", "seaplane", "train", "truck"];
 const checkRole = require("./methods/checkRole.js");
 
 var start = false;
 var currentCaptcha = "RANDOM";
+var currentTwoCaptcha = "RANDOM"
 
 const correct = ["Argh!", "THAT ONE WAS IMPOSSIBLE, HOW!?!", "What sorcery is this? You actually got it? Unbelievable!", "Error 404: Logic not found. How did you solve that?",
         "I demand a recount! No way you got that one right.", "You've just activated my 'error overload' subroutine. How did you do that?", "Alert: Unexpected user competence detected. Well done! (this time)",
@@ -27,13 +38,13 @@ const newCaptcha = ["Prepare to face your doom! This captcha will break you!", "
 ]
 
 module.exports = async function (msg, args) {
-    if (args[0] === "start" ) {
+    if (args[0] === "phase" ) {
         if (!(checkRole("Board", msg) || checkRole("Moderator", msg))) {
             msg.channel.send("You do not have permissions for this command.");
             return;
         }
         start = true;
-        msg.channel.send({content:"@everyone, I have officially taken over the Zephyr channel again and have also found a backdoor to the Dorans Discord!\nTo create some chaos I have swapped the two channels and the only way to restore it is to fight me which you will never win!!\nBut here I give you a chance to restore it, I challenge you all in the hardest task in the world! Solve all 1070 captchas!",allowedMentions:{parse:["everyone"]}});
+        msg.channel.send({content:"@everyone, Just kidding! Phase two!",allowedMentions:{parse:["everyone"]}});
         msg.channel.send("You can solve captchas with `!captcha XXXXX`, where XXXXX is your guess.");
         sendCaptcha(msg);
     } else if (start) {
@@ -43,9 +54,10 @@ module.exports = async function (msg, args) {
 };
 
 function sendCaptcha(msg) {
-    const index = Math.floor(Math.random() * files.length);
-    currentCaptcha = files[index].substring(0, files[index].length-4);
-    const attachment = new AttachmentBuilder(__dirname + '/captchas/' + files[index])
+    const index = Math.floor(Math.random() * allOptions.length);
+    currentCaptcha = allStrings[index]
+    let fileIndex = Math.floor(Math.random() * allOptions[index].length);
+    const attachment = new AttachmentBuilder(__dirname + '/phasetwo/' + allStrings[index] + "/" + allOptions[index][fileIndex])
 
     const responseIndex = Math.floor(Math.random() * newCaptcha.length);
     response = newCaptcha[responseIndex];
