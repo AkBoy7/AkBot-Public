@@ -24,7 +24,7 @@ function loop(client) {
         console.log("new word, " + rightGuessString)
         botChannel = client.channels.cache.get(process.env.AKBOT_CHANNEL_ID);
         botChannel.send('<@&899285064226050108> There is a new Wordle! You all have 1 guess each and in total ' + NUMBER_OF_GUESSES + ' guesses.\n'+
-        'You can win `2500` points in total shared among the people who helped with guessing, next wordle will be up in 24 hours');
+        'You can win `2000` points in total shared among the people who helped with guessing, next wordle will be up in between 6 and 12 hours.');
         loop(client);
     }, rand);
 }
