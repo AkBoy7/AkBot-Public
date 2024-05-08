@@ -11,11 +11,11 @@ const MAX_TOKENS = 2; // This should be the same as in tokenManager.js
 module.exports = function (msg, args) {
     const { EmbedBuilder } = require('discord.js');
     // Only allowed to be used in #pcrequest channel
-    if (msg.channel.id != process.env.PC_REQUEST_CHANNEL_ID) {
-        msg.channel.send("Wrong text channel, please use the pcrequest channel.\n" +
-        "If you do not have acces to this channel then message the board or a moderator.");
-        return;
-    }
+    // if (msg.channel.id != process.env.PC_REQUEST_CHANNEL_ID) {
+    //     msg.channel.send("Wrong text channel, please use the pcrequest channel.\n" +
+    //     "If you do not have acces to this channel then message the board or a moderator.");
+    //     return;
+    // }
     client = msg.client;
 
     // Command: !pc 
@@ -253,8 +253,8 @@ function helpDescription(msg, EmbedBuilder) {
         { name: '\u200B', value: '\u200B' },
     )
     .addFields(
-        { name: 'Mod commands', value: '!pc cancel DD-MM slotnumber\n\n\n\n!pc remove DD-MM\n', inline: true },
-        { name: 'Description', value: 'Cancel any reservation of the specified slot number on that date.\n\nRemove the date from the schedule and cancels any reservations on that date\n', inline: true },
+        { name: 'Mod commands', value: '!pc cancel DD-MM slotnumber\n\n\n\n!pc remove DD-MM\n\n\n\n!initSchedule\n', inline: true },
+        { name: 'Description', value: 'Cancel any reservation of the specified slot number on that date.\n\nRemove the date from the schedule and cancels any reservations on that date\n\nInitializes a new schedule for pc reservation for a new year', inline: true },
     )
     .setTimestamp();
 
