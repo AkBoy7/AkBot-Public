@@ -82,10 +82,10 @@ module.exports = async function (msg) {
   client.setData.run(userData);
 
   // for testing in specific channel
-  if (msg.channel.id != process.env.TEST_CHANNELID) {
-    console.log("not correct channel");
-    return;
-  }
+  // if (msg.channel.id != process.env.TEST_CHANNELID) {
+  //   console.log("not correct channel");
+  //   return;
+  // }
 
   //ignore dms and send them to AkBoy
   if (

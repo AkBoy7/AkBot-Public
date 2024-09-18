@@ -31,7 +31,7 @@ async function checkFileAndSendMessages(client) {
     return;
   }
 
-  const channel = await client.channels.fetch(process.env.TEST_CHANNELID);
+  const channel = await client.channels.fetch(process.env.AKBOT_CHANNEL_ID);
   let hasChanges = false; // To track if we need to write back to the file
 
   // Process akpoints messages
