@@ -63,13 +63,17 @@ async function checkFileAndSendMessages(client) {
   // Process game notifications and remove them after sending
   if (jsonData.game_notifications) {
     if (jsonData.game_notifications.wordle) {
-      await channel.send(jsonData.game_notifications.wordle);
+      await channel.send(
+        "<@&899285064226050108> " + jsonData.game_notifications.wordle
+      );
       delete jsonData.game_notifications.wordle; // Remove wordle notification after sending
       hasChanges = true;
     }
 
     if (jsonData.game_notifications.footprint) {
-      await channel.send(jsonData.game_notifications.footprint);
+      await channel.send(
+        "<@&899285064226050108> " + jsonData.game_notifications.footprint
+      );
       delete jsonData.game_notifications.footprint; // Remove footprint notification after sending
       hasChanges = true;
     }
