@@ -39,6 +39,13 @@ module.exports = function (msg, args) {
         return;
     }
 
+    // Command: !pc tokens
+    // This will send how many tokens the message author has
+    if (args.length == 1 && args[0].toLowerCase() === "tokens") {
+        printTokens(msg);
+        return;
+    }
+
     // Command: !pc request DD-MM 
     // This will reserve a slot on the requested date and consume a token
     if (args.length == 2 && args[0].toLowerCase() === "request") {
@@ -248,8 +255,8 @@ function helpDescription(msg, EmbedBuilder) {
     .setDescription('Made by Akam.\nIf you experience any issues with this bot please contact AkBob')
     .setThumbnail('https://i.imgur.com/mXodbnH.png')
     .addFields(
-        { name: 'User commands', value: '!pc help \n\n!pc schedule \n\n!pc request DD-MM \n\n!pc cancel DD-MM \n', inline: true },
-        { name: 'Description', value: 'Gives a list of commands related to pc requests \nSend the current schedule of this month and next month \nRequest and reserve a slot on the requested date \nCancel your reservation on the requested date', inline: true },
+        { name: 'User commands', value: '!pc help \n\n!pc schedule \n\n!pc request DD-MM \n\n!pc cancel DD-MM \n\n!pc tokens\n', inline: true },
+        { name: 'Description', value: 'Gives a list of commands related to pc requests \nSend the current schedule of this month and next month \nRequest and reserve a slot on the requested date \nCancel your reservation on the requested date\nView the number of tokens you have', inline: true },
         { name: '\u200B', value: '\u200B' },
     )
     .addFields(
@@ -379,4 +386,16 @@ async function printSchedule(msg, EmbedBuilder) {
         msg.channel.send({embeds: [scheduleEmbed]});
     }
     return;
+}
+
+function printTokens(msg) {
+    // Copied from reserveSlot function
+    let tokenUserData = client.getUserToken.get(msg.author.id);
+    if (!tokenUserData) {
+        msg.channel.send("There was an error with retrieving your data in the dataset." + 
+        "This might be because you just got the captain role, try again at the start of next month. Or you might be mod abusing. If this is not the case then please contact AkBob.");
+        return;
+    }
+
+    msg.channel.send(`You have ${tokenUserData.tokens} tokens`);
 }
