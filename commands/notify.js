@@ -32,6 +32,9 @@ async function checkFileAndSendMessages(client) {
   }
 
   const channel = await client.channels.fetch(process.env.AKBOT_CHANNEL_ID);
+  const pc_channel = await client.channels.fetch(
+    process.env.PC_REQUEST_CHANNEL_ID
+  );
   let hasChanges = false; // To track if we need to write back to the file
 
   // Process akpoints messages
@@ -56,6 +59,36 @@ async function checkFileAndSendMessages(client) {
         const message = level.messenges.shift(); // Remove the first message
         await sendMessageToUser(client, channel, userId, message);
         hasChanges = true; // Mark that changes were made
+      }
+    }
+  }
+
+  // Process late_cancel messages
+  if (jsonData.late_cancel) {
+    for (const userId in jsonData.late_cancel) {
+      const lateCancel = jsonData.late_cancel[userId];
+      if (lateCancel.messenges && lateCancel.messenges.length > 0) {
+        // Send each message and then remove it
+        while (lateCancel.messenges.length > 0) {
+          const message = lateCancel.messenges.shift();
+          await sendMessageToUser(client, pc_channel, userId, message);
+          hasChanges = true; // Mark that changes were made
+        }
+      }
+    }
+  }
+
+  // Process board_cancel messages
+  if (jsonData.board_cancel) {
+    for (const userId in jsonData.board_cancel) {
+      const boardCancel = jsonData.board_cancel[userId];
+      if (boardCancel.messenges && boardCancel.messenges.length > 0) {
+        // Send each message and then remove it
+        while (boardCancel.messenges.length > 0) {
+          const message = boardCancel.messenges.shift();
+          await sendMessageToUser(client, pc_channel, userId, message);
+          hasChanges = true; // Mark that changes were made
+        }
       }
     }
   }
