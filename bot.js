@@ -58,7 +58,6 @@ function readyDiscord() {
   lockin(client);
   // wordleGenerator(client);
   notify(client);
-  tokenManager(client);
   console.log("---init succesfull, bot is online---");
 }
 
