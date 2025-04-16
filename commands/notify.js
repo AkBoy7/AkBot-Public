@@ -110,6 +110,14 @@ async function checkFileAndSendMessages(client) {
       delete jsonData.game_notifications.footprint; // Remove footprint notification after sending
       hasChanges = true;
     }
+
+    if (jsonData.game_notifications.cries) {
+      await channel.send(
+        "<@&899285064226050108> " + jsonData.game_notifications.cries
+      );
+      delete jsonData.game_notifications.cries; // Remove cries notification after sending
+      hasChanges = true;
+    }
   }
 
   // If any changes were made to the messages, write the updated data back to the file
